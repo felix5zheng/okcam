@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-xyuqrCcN8TW8/350g2Jh+F1baPEilFFYHir1nCYO9T0='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-vGT8sbPg3tml2zz7QNqEMSiQRiCDnGINycvU+n8M4MA='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>拍什麼都ok | OK Cam - Snap Anything</title>
 <script>document.documentElement.classList.add("js")</script>
@@ -651,7 +651,6 @@ html:has(.lb[open]) { overflow: hidden; }
     clampPan();
   };
   const reset = (anim) => { s = 1; tx = 0; ty = 0; dy = 0; apply(anim); };
-  const toggleZoom = (x, y) => { if (s > 1.01) reset(true); else { zoomAt(x, y, 2.5); apply(true); } };
 
   function show(i) {
     if (i < 0 || i >= N) return;
@@ -734,9 +733,9 @@ html:has(.lb[open]) { overflow: hidden; }
     else if (e.key === '-') { const c = center(); zoomAt(c.x, c.y, s / 1.5); apply(true); }
   });
 
-  // ---- gestures: tap outside closes, drag up or down closes, swipe sideways turns, pinch / double-tap / click zooms, drag pans when zoomed
+  // ---- gestures: tap the photo's left/right half turns, tap outside closes, drag up or down closes, swipe sideways turns, pinch / wheel zooms, drag pans when zoomed
   const pts = new Map();
-  let g = null, lastTap = { t: 0, x: 0, y: 0 };
+  let g = null;
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
   const startOne = (e, moved) => ({ type: 'one', vx: 0, lx: 0, lt: 0, x0: e.clientX, y0: e.clientY, tx0: tx, ty0: ty, t0: performance.now(), moved, mode: moved ? (s > 1.01 ? 'pan' : null) : null, onFrame: !!e.target.closest('.lb-frame'), pointerType: e.pointerType });
@@ -788,10 +787,10 @@ html:has(.lb[open]) { overflow: hidden; }
     if (!gg.moved) {
       if (e.type === 'pointercancel') return;
       if (!gg.onFrame) { if (s > 1.01) reset(true); else close(); return; }
-      if (gg.pointerType === 'mouse') { toggleZoom(e.clientX, e.clientY); return; }
-      const now = performance.now();
-      if (now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30) { lastTap.t = 0; toggleZoom(e.clientX, e.clientY); }
-      else lastTap = { t: now, x: e.clientX, y: e.clientY };
+      if (s > 1.01) { reset(true); return; }
+      // tap the photo: left half goes back, right half goes forward
+      const r = frame.getBoundingClientRect();
+      slideTo(e.clientX < r.left + r.width / 2 ? -1 : 1);
       return;
     }
     if (gg.mode === 'down') { if (Math.abs(dy) > 90) close(); else { dy = 0; apply(true); } }
@@ -801,6 +800,11 @@ html:has(.lb[open]) { overflow: hidden; }
       if ((Math.abs(dx) > innerWidth * 0.18 || flick) && byIndex[cur + dir]) slideTo(dir); else reset(true);
     }
   };
+  frame.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse' || s > 1.01) { frame.style.cursor = ''; return; }
+    const r = frame.getBoundingClientRect(), left = e.clientX < r.left + r.width / 2;
+    frame.style.cursor = byIndex[cur + (left ? -1 : 1)] ? (left ? 'w-resize' : 'e-resize') : 'default';
+  });
   stage.addEventListener('pointerup', end);
   stage.addEventListener('pointercancel', end);
   stage.addEventListener('wheel', e => {
