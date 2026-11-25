@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-MSFOgWiiX82q09AINWI+NTKLp7MjX0YLxK5qheJQNVw=' 'sha256-ujtq+ZUBdPjFUOYu7YOuVrLFTVKmfUXRfF1sXJPZme4=' 'sha256-D3caKY73TRkcxqV2fgw47Yta+Zq5LjPKTcOZ6GLD+VQ='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-2o/lo4QhYrtsotdoe+USnjvo90q9CsuLwazIlaX60BQ=' 'sha256-ujtq+ZUBdPjFUOYu7YOuVrLFTVKmfUXRfF1sXJPZme4=' 'sha256-D3caKY73TRkcxqV2fgw47Yta+Zq5LjPKTcOZ6GLD+VQ='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#f6f3ee">
 <link rel="preload" href="img/S/01.dat" as="fetch" crossorigin>
@@ -157,6 +157,13 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
 
 /* ok-i18n:start */
 /* ok-i18n：語言選單與各語言字體。顏色、圓角、陰影全部走頁面自己的 token。 */
+:root {
+  --font-lang-tc: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
+  --font-lang-sc: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif;
+  --font-lang-ja: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --font-lang-ko: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-lang-hi: -apple-system, BlinkMacSystemFont, "Kohinoor Devanagari", "Noto Sans Devanagari", sans-serif;
+}
 :root:lang(zh-Hans) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
 :root:lang(ja) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; }
 :root:lang(ko) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; }
@@ -165,22 +172,22 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
 :root:lang(en), :root:lang(es), :root:lang(pt), :root:lang(ms), :root:lang(hi) { word-break: normal; overflow-wrap: break-word; }
 
 .lang { position: relative; flex: none; }
-.lang-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 9px; font: inherit; font-size: var(--text-xs, 12px); color: var(--color-ink-2); background: transparent; border: 1px solid var(--color-hairline); border-radius: var(--radius-pill, 9999px); cursor: pointer; white-space: nowrap; transition: color var(--dur, 240ms) var(--ease), border-color var(--dur, 240ms) var(--ease), background-color var(--dur, 240ms) var(--ease); }
+.lang-btn { display: inline-flex; align-items: center; gap: var(--space-xs, 8px); height: 32px; padding: 0 var(--space-sm, 12px) 0 var(--space-xs, 8px); font: inherit; font-size: var(--text-xs, 12px); color: var(--color-ink-2); background: transparent; border: 1px solid var(--color-hairline); border-radius: var(--radius-pill, 9999px); cursor: pointer; white-space: nowrap; transition: color var(--dur, 240ms) var(--ease), border-color var(--dur, 240ms) var(--ease), background-color var(--dur, 240ms) var(--ease); }
 .lang-btn svg { width: 14px; height: 14px; flex: none; }
 .lang-btn:hover, .lang-btn[aria-expanded="true"] { color: var(--color-ink); border-color: var(--color-ink); }
 .lang-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; transition: none; }
 .lang-btn:active { background: var(--color-band); }
-.lang-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 176px; max-height: min(70dvh, 420px); overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--color-card); border-radius: var(--radius-md, 14px); box-shadow: var(--shadow-lift); }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 176px; max-height: min(70dvh, 420px); overflow-y: auto; margin: 0; padding: var(--space-xs, 8px); list-style: none; background: var(--color-card); border-radius: var(--radius-md, 14px); box-shadow: var(--shadow-lift); }
 .lang-menu[hidden] { display: none; }
-.lang-menu button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 9px 12px; font: inherit; font-size: var(--text-sm, 14px); line-height: 1.35; letter-spacing: 0; color: var(--color-ink); background: transparent; border: 0; border-radius: 9px; cursor: pointer; text-align: left; }
-.lang-menu button[lang="zh-Hant"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif; }
-.lang-menu button[lang="zh-Hans"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif; }
-.lang-menu button[lang="ja"] { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
-.lang-menu button[lang="ko"] { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
-.lang-menu button[lang="hi"] { font-family: -apple-system, BlinkMacSystemFont, "Kohinoor Devanagari", "Noto Sans Devanagari", sans-serif; }
+.lang-menu button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: var(--space-md, 16px); padding: var(--space-xs, 8px) var(--space-sm, 12px); font: inherit; font-size: var(--text-sm, 14px); line-height: 1.35; letter-spacing: 0; color: var(--color-ink); background: transparent; border: 0; border-radius: 9px; cursor: pointer; text-align: left; }
+.lang-menu button[lang="zh-Hant"] { font-family: var(--font-lang-tc); }
+.lang-menu button[lang="zh-Hans"] { font-family: var(--font-lang-sc); }
+.lang-menu button[lang="ja"] { font-family: var(--font-lang-ja); }
+.lang-menu button[lang="ko"] { font-family: var(--font-lang-ko); }
+.lang-menu button[lang="hi"] { font-family: var(--font-lang-hi); }
 .lang-menu button:hover { background: var(--color-band); }
 .lang-menu button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
-.lang-menu button[aria-checked="true"]::after { content: ""; width: 9px; height: 5px; margin-top: -3px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+.lang-menu button[aria-checked="true"]::after { content: ""; width: 9px; height: 5px; transform-origin: center; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(-45deg); }
 @media (prefers-reduced-motion: reduce) { .lang-btn { transition: none; } }
 /* ok-i18n:end */
 </style>
@@ -755,7 +762,10 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
   const theme = document.querySelector('meta[name="theme-color"]');
   const themeOpen = getComputedStyle(root).getPropertyValue('--veil-solid').trim(), themeShut = theme ? theme.content : '';
   function openAt(i, from) { opener = from || null; if (!lb.open) { lb.showModal(); lb.focus({ preventScroll: true }); if (theme && themeOpen) theme.content = themeOpen; } show(i); }
-  const close = () => { if (lb.open) lb.close(); };
+  // a tap that closes the viewer must not fall through: the browser fires a click on whatever tile now sits under the finger
+  let shutAt = -1e9;
+  const close = () => { if (lb.open) { shutAt = performance.now(); lb.close(); } };
+  document.addEventListener('click', e => { if (performance.now() - shutAt < 700) { e.preventDefault(); e.stopPropagation(); } }, true);
   // turning pages: the whole strip (current + neighbours) glides one page over, then the pages are re-dealt in place
   let sliding = false;
   const slideTo = (dir) => {
@@ -786,7 +796,7 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
 
   // touch opens on a clean tap (pointerup), so a suppressed click never leaves a tile dead; mouse and keyboard use click
   let down = null, openedAt = -1e9;
-  grid.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') down = { x: e.clientX, y: e.clientY, t: performance.now(), tile: e.target.closest('.tile') }; });
+  grid.addEventListener('pointerdown', e => { if (performance.now() - shutAt < 700) { down = null; return; } if (e.pointerType !== 'mouse') down = { x: e.clientX, y: e.clientY, t: performance.now(), tile: e.target.closest('.tile') }; });
   grid.addEventListener('pointerup', e => {
     const d = down; down = null;
     if (!d || !d.tile || e.pointerType === 'mouse') return;
