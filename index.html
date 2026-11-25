@@ -603,11 +603,11 @@ html:has(.lb[open]) { overflow: hidden; }
 
   const apply = (anim) => {
     frame.classList.toggle('anim', !!anim);
-    const k = dy ? Math.max(0.82, 1 - dy / 1400) : 1;
+    const k = dy ? Math.max(0.82, 1 - Math.abs(dy) / 1400) : 1;
     frame.style.transform = `translate(${tx}px, ${ty + dy}px) scale(${s * k})`;
-    veil.style.opacity = dy ? String(Math.max(0.15, 1 - dy / 320)) : '';
+    veil.style.opacity = dy ? String(Math.max(0.15, 1 - Math.abs(dy) / 320)) : '';
     lb.classList.toggle('is-zoomed', s > 1.01);
-    lb.classList.toggle('is-dragging', dy > 0);
+    lb.classList.toggle('is-dragging', dy !== 0);
   };
   const center = () => { const r = stage.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
   const clampPan = () => {
@@ -682,7 +682,7 @@ html:has(.lb[open]) { overflow: hidden; }
     else if (e.key === '-') { const c = center(); zoomAt(c.x, c.y, s / 1.5); apply(true); }
   });
 
-  // ---- gestures: tap outside closes, drag down closes, swipe sideways turns, pinch / double-tap / click zooms, drag pans when zoomed
+  // ---- gestures: tap outside closes, drag up or down closes, swipe sideways turns, pinch / double-tap / click zooms, drag pans when zoomed
   const pts = new Map();
   let g = null, lastTap = { t: 0, x: 0, y: 0 };
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -709,10 +709,10 @@ html:has(.lb[open]) { overflow: hidden; }
     const dx = e.clientX - g.x0, ddy = e.clientY - g.y0;
     if (!g.moved && Math.hypot(dx, ddy) > 6) {
       g.moved = true;
-      g.mode = s > 1.01 ? 'pan' : (Math.abs(ddy) > Math.abs(dx) ? (ddy > 0 ? 'down' : 'none') : 'swipe');
+      g.mode = s > 1.01 ? 'pan' : (Math.abs(ddy) > Math.abs(dx) ? 'down' : 'swipe');
     }
     if (g.mode === 'pan') { tx = g.tx0 + dx; ty = g.ty0 + ddy; clampPan(); apply(false); }
-    else if (g.mode === 'down') { dy = Math.max(0, ddy); apply(false); }
+    else if (g.mode === 'down') { dy = ddy; apply(false); }
     else if (g.mode === 'swipe') { tx = dx * 0.5; apply(false); }
   });
   const end = (e) => {
@@ -736,7 +736,7 @@ html:has(.lb[open]) { overflow: hidden; }
       else lastTap = { t: now, x: e.clientX, y: e.clientY };
       return;
     }
-    if (gg.mode === 'down') { if (dy > 90) close(); else { dy = 0; apply(true); } }
+    if (gg.mode === 'down') { if (Math.abs(dy) > 90) close(); else { dy = 0; apply(true); } }
     else if (gg.mode === 'swipe') { if (Math.abs(dx) > 60 && byIndex[cur + (dx < 0 ? 1 : -1)]) show(cur + (dx < 0 ? 1 : -1)); else reset(true); }
   };
   stage.addEventListener('pointerup', end);
