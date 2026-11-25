@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-NWSZraITg+KFlTzpLZ/g8i5Pypdy35SD7ZccGBHOPqw='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-uowm1SBduzfyIPrVK8a0Pm/PVDN/01rc22OGmU0kUgk='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#f6f3ee">
 <link rel="preload" href="img/S/01.dat" as="fetch" crossorigin>
 <link rel="preload" href="img/S/02.dat" as="fetch" crossorigin>
 <link rel="preload" href="img/S/03.dat" as="fetch" crossorigin>
@@ -29,7 +30,7 @@
   --color-hairline: oklch(83% 0.011 70); --color-track: oklch(90% 0.012 74); --color-track-2: oklch(86% 0.013 72);
   --color-accent: var(--color-ink); --color-accent-ink: var(--color-paper); --color-focus: var(--color-ink);
   --nav-glass: oklch(97.2% 0.006 82 / 0.8);
-  --veil: oklch(16% 0.02 52 / 0.62); --on-veil: oklch(96% 0.008 80); --on-veil-2: oklch(96% 0.008 80 / 0.72);
+  --veil: oklch(16% 0.02 52 / 0.62); --veil-solid: #4a423b; --on-veil: oklch(96% 0.008 80); --on-veil-2: oklch(96% 0.008 80 / 0.72);
   --veil-btn: oklch(96% 0.008 80 / 0.14); --veil-btn-hover: oklch(96% 0.008 80 / 0.26); --veil-btn-off: oklch(96% 0.008 80 / 0.06);
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Helvetica Neue", "Noto Sans TC", Arial, sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Helvetica Neue", "Noto Sans TC", Arial, sans-serif;
@@ -114,7 +115,7 @@ body { font-size: var(--text-md); line-height: 1.47; letter-spacing: -0.016em; c
 .lb-stage > .lb-frame { grid-area: 1 / 1; }
 .lb-ghost { pointer-events: none; visibility: hidden; }
 .lb-ghost .lb-img { opacity: 1; transition: none; }
-html:has(.lb[open]) { overflow: hidden; }
+html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: var(--veil-solid); }
 .tile { content-visibility: auto; contain-intrinsic-size: auto 320px; }
 .lb.is-zoomed .lb-frame { cursor: grab; }
 .lb.is-zoomed .lb-frame:active { cursor: grabbing; }
@@ -137,7 +138,6 @@ html:has(.lb[open]) { overflow: hidden; }
   opacity: 0; animation: spin 800ms linear infinite; transition: opacity var(--dur-short) var(--ease-out); pointer-events: none; }
 .lb.is-loading .lb-spin { opacity: 1; transition-delay: 400ms; }
 @keyframes spin { to { transform: rotate(1turn); } }
-html:has(.lb[open]) { overflow: hidden; }
 
 @media (max-width: 60rem) { :root { --gutter: 22px; } }
 @media (max-width: 40rem) {
@@ -537,7 +537,7 @@ html:has(.lb[open]) { overflow: hidden; }
     })();
     cache.set(path, p); p.then(u => done.set(path, u), () => cache.delete(path));
     // keep at most 40 large photos in memory
-    const big = [...cache.keys()].filter(k => k.includes('/V/'));
+    const big = [...cache.keys()].filter(k => k.includes('/V/') || k.includes('/M/'));
     for (const k of big.slice(0, Math.max(0, big.length - 40))) { if (k === current) continue; done.delete(k); cache.get(k).then(u => URL.revokeObjectURL(u)).catch(() => {}); cache.delete(k); }
     return p;
   };
@@ -549,7 +549,8 @@ html:has(.lb[open]) { overflow: hidden; }
   const grid = document.getElementById('grid');
   const tiles = [...grid.querySelectorAll('.tile')];
   const N = tiles.length;
-  const bigUrl = (k) => `img/V/${k}.dat`;
+  const bigUrl = (k) => `img/V/${k}.dat`;     // 2560px, for zooming and very large screens
+  const midUrl = (k) => `img/M/${k}.dat`;     // 1600px, opens first (about a third of the size)
   const sheetUrl = (s) => `img/S/${s}.dat`;
   const sheetBlob = {};
 
@@ -573,8 +574,9 @@ html:has(.lb[open]) { overflow: hidden; }
   const trickle = () => { const nx = order.find(sid => !loaded[sid]); if (!nx) return; loadSheet(nx); idle(() => setTimeout(trickle, 120)); };
   window.addEventListener('load', () => setTimeout(trickle, 600));
   const warm = new Set();
-  const prefetch = (k) => { if (!warm.has(k)) { warm.add(k); dec(bigUrl(k)).catch(() => warm.delete(k)); } };
+  const prefetch = (k) => { if (!warm.has(k)) { warm.add(k); dec(midUrl(k)).catch(() => warm.delete(k)); } };
   grid.addEventListener('pointerover', e => { const t = e.target.closest('.tile'); if (t) prefetch(t.dataset.k); });
+  grid.addEventListener('pointerdown', e => { const t = e.target.closest('.tile'); if (t) prefetch(t.dataset.k); }, { passive: true });
 
   // ---- masonry: each photo drops into the shortest column, in order; columns follow the width
   let cols = 0;
@@ -641,7 +643,7 @@ html:has(.lb[open]) { overflow: hidden; }
     gh.style.setProperty('--r', (+t.dataset.r) / 100);
     gh.style.backgroundImage = sheetBlob[t.dataset.s] ? `url(${sheetBlob[t.dataset.s]})` : 'none';
     gh.style.backgroundPosition = ph.style.backgroundPosition;
-    const path = bigUrl(t.dataset.k), want = gh.dataset.i;
+    const path = done.has(bigUrl(t.dataset.k)) ? bigUrl(t.dataset.k) : midUrl(t.dataset.k), want = gh.dataset.i;
     gi.style.backgroundImage = done.has(path) ? `url(${done.get(path)})` : 'none';
     if (!done.has(path)) dec(path).then(u => { if (gh.dataset.i === want) gi.style.backgroundImage = `url(${u})`; }).catch(() => {});
   };
@@ -672,6 +674,17 @@ html:has(.lb[open]) { overflow: hidden; }
     const y = scrollY + r.top - (vh - r.height) / 2;
     window.scrollTo({ top: Math.max(0, y), behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' });
   };
+  // the 2560px file is fetched only when the screen or the zoom actually needs it, then swapped in without a fade
+  let hiFor = '';
+  const needHi = () => Math.max(frame.offsetWidth, frame.offsetHeight) * (devicePixelRatio || 1) * s > 1700;
+  let hiReq = '';
+  const loadHi = (k, my) => {
+    if (hiReq === k + ':' + my) return; hiReq = k + ':' + my;
+    const path = bigUrl(k);
+    dec(path).then(u => { const im = new Image(); im.src = u; return (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => {
+      if (my === token && hiFor === k) { current = path; img.style.backgroundImage = `url(${u})`; }
+    }); }).catch(() => {});
+  };
   function show(i) {
     if (i < 0 || i >= N) return;
     cur = i; reset(false);
@@ -683,23 +696,28 @@ html:has(.lb[open]) { overflow: hidden; }
     idx.textContent = `${i + 1} / ${N}`;
     prev.disabled = i === 0; next.disabled = i === N - 1;
     const my = ++token;
-    current = bigUrl(k);
+    hiFor = k;
+    current = done.has(bigUrl(k)) ? bigUrl(k) : midUrl(k);
     fillGhost(-1); fillGhost(1); apply(false);
+    const upgrade = () => { if (my === token && current !== bigUrl(k) && needHi()) loadHi(k, my); };
     if (done.has(current)) {
       img.style.transition = 'none'; img.style.backgroundImage = `url(${done.get(current)})`; img.classList.add('ready'); lb.classList.remove('is-loading');
       void img.offsetWidth; img.style.transition = '';
+      upgrade();
     } else {
     img.classList.remove('ready'); lb.classList.add('is-loading');
     dec(current).then(u => {
       const im = new Image(); im.src = u;
-      (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { if (my === token) { img.style.backgroundImage = `url(${u})`; img.classList.add('ready'); lb.classList.remove('is-loading'); } });
+      (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { if (my === token) { img.style.backgroundImage = `url(${u})`; img.classList.add('ready'); lb.classList.remove('is-loading'); upgrade(); } });
     }).catch(() => { if (my === token) lb.classList.remove('is-loading'); });
     }
     for (const j of [i + 1, i - 1, i + 2, i - 2, i + 3]) if (byIndex[j]) prefetch(byIndex[j].dataset.k);
     follow(t, lb.open);
     history.replaceState(null, '', `${location.pathname}${location.search}#${k}`);
   }
-  function openAt(i, from) { opener = from || null; if (!lb.open) { lb.showModal(); lb.focus({ preventScroll: true }); } show(i); }
+  const theme = document.querySelector('meta[name="theme-color"]');
+  const themeOpen = getComputedStyle(root).getPropertyValue('--veil-solid').trim(), themeShut = theme ? theme.content : '';
+  function openAt(i, from) { opener = from || null; if (!lb.open) { lb.showModal(); lb.focus({ preventScroll: true }); if (theme && themeOpen) theme.content = themeOpen; } show(i); }
   const close = () => { if (lb.open) lb.close(); };
   // turning pages: the whole strip (current + neighbours) glides one page over, then the pages are re-dealt in place
   let sliding = false;
@@ -722,6 +740,7 @@ html:has(.lb[open]) { overflow: hidden; }
     }, ms);
   };
   lb.addEventListener('close', () => {
+    if (theme) theme.content = themeShut;
     token++; reset(false); img.style.backgroundImage = 'none'; current = '';
     history.replaceState(null, '', `${location.pathname}${location.search}`);
     const back = byIndex[cur] || opener; if (back) { follow(back, false); if (usingKeys) back.focus({ preventScroll: true }); }
@@ -773,6 +792,7 @@ html:has(.lb[open]) { overflow: hidden; }
     if (g.type === 'pinch' && pts.size >= 2) {
       const [a, b] = [...pts.values()], m = mid(a, b);
       zoomAt(g.m0.x, g.m0.y, g.s0 * dist(a, b) / g.d0, g.s0, g.tx0, g.ty0);
+      if (needHi() && current !== bigUrl(hiFor)) loadHi(hiFor, token);
       tx += m.x - g.m0.x; ty += m.y - g.m0.y; clampPan(); apply(false);
       return;
     }
@@ -830,6 +850,7 @@ html:has(.lb[open]) { overflow: hidden; }
   stage.addEventListener('wheel', e => {
     e.preventDefault();
     zoomAt(e.clientX, e.clientY, s * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0025)));
+    if (needHi() && current !== bigUrl(hiFor)) loadHi(hiFor, token);
     apply(false);
   }, { passive: false });
 
