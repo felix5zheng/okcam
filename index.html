@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拍什麼都ok | OK Cam - Snap Anything</title>
+<script>document.documentElement.classList.add("js")</script>
+<meta name="description" content="拍什麼都ok 的 341 張照片，瀑布式排列，點開可放大瀏覽。">
+<style>
+/* Hallmark · shape: app screen · genre: editorial · theme: custom (by request: Atelier x Apple DESIGN.md, Apple system type, no buttons, no hero)
+ * nav: a frosted warm bar with the album name and photo count; columns follow the width · signature: the 341-photo waterfall on warm paper opening into a dark viewer · states: loading tile, failed tile, viewer loading, full
+ * axes: light/roman-serif-on-sans/warm · posture: restrained · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P3 H5 E4 S4 R5 V4 · weakest: P, a gallery argues little; the photographs carry it, chrome stays to one bar */
+/* user override of Floor 7: the photographs are stored encrypted and drawn by script, by request (block downloads); without script the grid stays empty */
+/* waive 29: the Apple half of the brief asks for a frosted navigation bar; the viewer backdrop keeps a light 4px blur so the grid shows through */
+
+:root {
+  color-scheme: light;
+  --color-paper: oklch(97.2% 0.006 82); --color-band: oklch(93.6% 0.011 76); --color-card: oklch(90.5% 0.013 74);
+  --color-ink: oklch(19% 0.024 52); --color-ink-2: oklch(31% 0.018 54); --color-muted: oklch(46% 0.014 60);
+  --color-hairline: oklch(83% 0.011 70); --color-track: oklch(90% 0.012 74); --color-track-2: oklch(86% 0.013 72);
+  --color-accent: var(--color-ink); --color-accent-ink: var(--color-paper); --color-focus: var(--color-ink);
+  --nav-glass: oklch(97.2% 0.006 82 / 0.8);
+  --veil: oklch(16% 0.02 52 / 0.62); --on-veil: oklch(96% 0.008 80); --on-veil-2: oklch(96% 0.008 80 / 0.72);
+  --veil-btn: oklch(96% 0.008 80 / 0.14); --veil-btn-hover: oklch(96% 0.008 80 / 0.26); --veil-btn-off: oklch(96% 0.008 80 / 0.06);
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Helvetica Neue", "Noto Sans TC", Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Helvetica Neue", "Noto Sans TC", Arial, sans-serif;
+  --display-weight: 600; --tracking-display: -0.01em;
+  --text-xs: 12px; --text-sm: 14px; --text-md: 17px; --text-nav-title: 21px; --text-lead: 21px; --text-sub: 24px; --text-section: 40px; --text-title: 24px;
+  --text-display: clamp(52px, 8vw, 96px); --text-display-s: 40px; --text-xl: 24px;
+  --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 28px; --space-2xl: 52px; --space-3xl: 90px;
+  --radius-tile: 20px; --radius-buttons: 9999px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --dur-micro: 150ms; --dur-short: 240ms; --dur-long: 480ms;
+  --container: 1440px; --gutter: 40px; --gap-columns: 20px; --section-gap: 90px; --z-sticky-nav: 300;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scrollbar-color: var(--color-muted) var(--color-paper); scroll-padding-top: var(--space-3xl); }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; caret-color: var(--color-accent); }
+::selection { background: color-mix(in oklab, var(--color-accent) 22%, transparent); color: var(--color-ink); }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight, 700); font-synthesis: none; letter-spacing: var(--tracking-display); line-height: 1.05; overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
+h1 { max-width: 20ch; font-size: var(--text-display); } h2 { max-width: 30ch; font-size: var(--text-section); } h3 { max-width: 40ch; font-size: var(--text-title); line-height: 1.2; }
+.lead { font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; }
+p { margin: 0; text-wrap: pretty; }
+p:not([class]) { max-width: 65ch; }
+img, video { max-width: 100%; height: auto; display: block; }
+svg { display: block; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); box-sizing: border-box; }
+.num, .figure, td.num { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[data-slot] { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--color-paper-2, var(--color-paper)), var(--color-paper-3, var(--color-paper))); }
+[data-slot] > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+[data-slot]:has(> img) > :not(img):not([data-keep]) { display: none !important; }
+@media (max-width: 60rem) { :root { --gutter: 24px; --section-gap-s: 80px; --section-gap: 96px; --section-gap-l: 120px; } }
+@media (max-width: 40rem) { :root { --gutter: 16px; --section-gap-s: 56px; --section-gap: 72px; --section-gap-l: 96px; --gap-columns: 16px; } }
+@media (prefers-reduced-motion: reduce) { *:not(.keep-motion), *:not(.keep-motion)::before, *:not(.keep-motion)::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+
+:root { --tile-gap: 18px; --col-target: 240px; --tile-r: var(--radius-tile); --bar-h: 52px; }
+html { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+@media print { body { display: none; } }
+body { font-size: var(--text-md); line-height: 1.47; letter-spacing: -0.016em; color: var(--color-ink-2); background: var(--color-paper); }
+
+.bar { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--nav-glass); -webkit-backdrop-filter: saturate(160%) blur(20px); backdrop-filter: saturate(160%) blur(20px);
+  box-shadow: 0 1px 0 var(--color-hairline); }
+.bar-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); min-height: var(--bar-h); }
+.bar-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: 0.012em; color: var(--color-ink); white-space: nowrap; }
+.bar-en { margin-left: var(--space-sm); font-size: var(--text-xs); font-weight: 400; letter-spacing: 0; color: var(--color-muted); }
+.bar-count { font-size: var(--text-xs); color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.band { background: var(--color-band); padding-block: var(--space-xl) var(--section-gap); }
+.grid { columns: var(--col-target); column-gap: var(--tile-gap); }
+.grid > .tile { margin-bottom: var(--tile-gap); break-inside: avoid; }
+.js .grid { columns: auto; display: flex; align-items: flex-start; gap: var(--tile-gap); }
+.col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--tile-gap); }
+.tile { display: block; position: relative; overflow: hidden; border-radius: var(--tile-r); background: var(--color-card); text-decoration: none; cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent; transform: translateZ(0); transition: transform var(--dur-long) var(--ease-out); }
+.ph { display: block; width: 100%; background-image: var(--bg); background-size: 100% auto; background-repeat: no-repeat; transition: opacity var(--dur-long) var(--ease-out); }
+.js .tile .ph { opacity: 0; }
+.js .ph:not(.on) { background-image: none; }
+.js .tile.is-in .ph { opacity: 1; }
+.tile:hover { transform: scale(1.015); }
+.tile:active { transform: scale(0.995); }
+.tile:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.tile.is-err { display: grid; place-items: center; aspect-ratio: 3 / 4; background: var(--color-paper); }
+.tile.is-err .ph { display: none; }
+.tile.is-err::after { content: "這張沒有載入成功"; color: var(--color-muted); font-size: var(--text-sm); }
+
+.lb { border: 0; padding: 0; margin: 0; inset: 0; width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; background: transparent; color: var(--on-veil); overflow: hidden;
+  opacity: 0; transition: opacity var(--dur-short) var(--ease-out), display var(--dur-short) allow-discrete, overlay var(--dur-short) allow-discrete; }
+.lb[open] { opacity: 1; }
+@starting-style { .lb[open] { opacity: 0; } }
+.lb::backdrop { background: transparent; }
+.lb-veil { position: absolute; inset: 0; background: var(--veil); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition: opacity var(--dur-short) var(--ease-out); }
+.lb.is-dragging .lb-veil { transition: none; }
+.lb-stage { position: absolute; inset: 0; display: grid; place-items: center; touch-action: none; overscroll-behavior: contain; }
+.lb-frame { --r: 1.333; position: relative; height: min(96dvh, calc(98vw * var(--r))); aspect-ratio: 1 / var(--r); max-width: 98vw; border-radius: 8px; overflow: hidden;
+  background-color: var(--veil-btn); background-size: 100% auto; background-repeat: no-repeat; transform-origin: center; will-change: transform; cursor: zoom-in; }
+.lb-frame.anim { transition: transform var(--dur-short) var(--ease-out); }
+.lb.is-zoomed .lb-frame { cursor: grab; }
+.lb.is-zoomed .lb-frame:active { cursor: grabbing; }
+.lb-img { display: block; width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity var(--dur-short) var(--ease-out); user-select: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; pointer-events: none; }
+.lb-img.ready { opacity: 1; }
+.lb-btn { appearance: none; position: absolute; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: var(--veil-btn); color: var(--on-veil); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out), opacity var(--dur-micro) var(--ease-out); }
+.lb-btn:hover { background: var(--veil-btn-hover); }
+.lb-btn:active { transform: scale(0.95); }
+.lb-btn:focus-visible { outline: 2px solid var(--on-veil); outline-offset: 3px; }
+.lb-btn:disabled { background: var(--veil-btn-off); color: var(--on-veil-2); cursor: not-allowed; }
+.lb-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.lb-prev { left: var(--space-xl); top: 50%; translate: 0 -50%; }
+.lb-next { right: var(--space-xl); top: 50%; translate: 0 -50%; }
+.lb-close-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; padding: 0; }
+.lb-close-sr:focus-visible { width: auto; height: 36px; clip-path: none; top: var(--space-xl); right: var(--space-xl); z-index: 3; padding: 0 var(--space-md); border-radius: var(--radius-buttons);
+  background: var(--veil-btn-hover); color: var(--on-veil); font-size: var(--text-sm); outline: 2px solid var(--on-veil); outline-offset: 2px; }
+.lb-meta { position: absolute; left: 0; right: 0; bottom: var(--space-xl); z-index: 2; display: flex; justify-content: center; pointer-events: none; transition: opacity var(--dur-micro) var(--ease-out); }
+.lb.is-zoomed .lb-meta, .lb.is-zoomed .lb-btn, .lb.is-dragging .lb-meta, .lb.is-dragging .lb-btn { opacity: 0; pointer-events: none; }
+.lb-idx { padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-buttons); background: var(--veil-btn); color: var(--on-veil-2); font-size: var(--text-xs); line-height: 1.33; font-variant-numeric: tabular-nums; }
+.lb-spin { position: absolute; z-index: 1; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--veil-btn); border-top-color: var(--on-veil);
+  opacity: 0; animation: spin 800ms linear infinite; transition: opacity var(--dur-short) var(--ease-out); pointer-events: none; }
+.lb.is-loading .lb-spin { opacity: 1; transition-delay: 400ms; }
+@keyframes spin { to { transform: rotate(1turn); } }
+html:has(.lb[open]) { overflow: hidden; }
+
+@media (max-width: 60rem) { :root { --gutter: 22px; } }
+@media (max-width: 40rem) {
+  :root { --gutter: 14px; --col-target: 150px; --tile-gap: 10px; --tile-r: 14px; --bar-h: 48px; }
+  .band { padding-block: var(--space-md) var(--space-2xl); }
+  .lb-prev, .lb-next { display: none; }
+  .bar-count { display: none; }
+  .lb-frame { height: min(100dvh, calc(100vw * var(--r))); max-width: 100vw; border-radius: 0; }
+}
+@media (hover: none) { .tile:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .lb-spin { animation: none; border-top-color: var(--veil-btn); } .tile:hover { transform: none; } }
+
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="container bar-in">
+    <span class="bar-title">拍什麼都ok<span class="bar-en">OK Cam - Snap Anything</span></span>
+    <span class="bar-count">341 張照片</span>
+  </div>
+</header>
+<main>
+  <h1 class="visually-hidden">拍什麼都ok</h1>
+  <section class="band" aria-label="照片">
+    <div class="container">
+      <div class="grid" id="grid">
+<a class="tile" href="#001" data-k="001" data-r="133.27" data-i="0" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 1 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#002" data-k="002" data-r="133.27" data-i="1" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 2 張照片" style="aspect-ratio:520/693;background-position:0 11.2665%"></span></a>
+<a class="tile" href="#003" data-k="003" data-r="133.27" data-i="2" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 3 張照片" style="aspect-ratio:520/693;background-position:0 22.5329%"></span></a>
+<a class="tile" href="#004" data-k="004" data-r="133.27" data-i="3" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 4 張照片" style="aspect-ratio:520/693;background-position:0 33.7994%"></span></a>
+<a class="tile" href="#005" data-k="005" data-r="125.0" data-i="4" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 5 張照片" style="aspect-ratio:520/650;background-position:0 44.753%"></span></a>
+<a class="tile" href="#006" data-k="006" data-r="133.27" data-i="5" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 6 張照片" style="aspect-ratio:520/693;background-position:0 55.6332%"></span></a>
+<a class="tile" href="#007" data-k="007" data-r="125.0" data-i="6" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 7 張照片" style="aspect-ratio:520/650;background-position:0 66.4353%"></span></a>
+<a class="tile" href="#008" data-k="008" data-r="133.27" data-i="7" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 8 張照片" style="aspect-ratio:520/693;background-position:0 77.4671%"></span></a>
+<a class="tile" href="#009" data-k="009" data-r="133.27" data-i="8" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 9 張照片" style="aspect-ratio:520/693;background-position:0 88.7335%"></span></a>
+<a class="tile" href="#010" data-k="010" data-r="133.27" data-i="9" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 10 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#011" data-k="011" data-r="56.15" data-i="10" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 11 張照片" style="aspect-ratio:520/292;background-position:0 0.0%"></span></a>
+<a class="tile" href="#012" data-k="012" data-r="133.27" data-i="11" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 12 張照片" style="aspect-ratio:520/693;background-position:0 5.3914%"></span></a>
+<a class="tile" href="#013" data-k="013" data-r="75.0" data-i="12" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 13 張照片" style="aspect-ratio:520/390;background-position:0 17.2233%"></span></a>
+<a class="tile" href="#014" data-k="014" data-r="135.58" data-i="13" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 14 張照片" style="aspect-ratio:520/705;background-position:0 25.4441%"></span></a>
+<a class="tile" href="#015" data-k="015" data-r="125.0" data-i="14" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 15 張照片" style="aspect-ratio:520/650;background-position:0 38.1022%"></span></a>
+<a class="tile" href="#016" data-k="016" data-r="133.27" data-i="15" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 16 張照片" style="aspect-ratio:520/693;background-position:0 50.4062%"></span></a>
+<a class="tile" href="#017" data-k="017" data-r="125.0" data-i="16" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 17 張照片" style="aspect-ratio:520/650;background-position:0 62.7038%"></span></a>
+<a class="tile" href="#018" data-k="018" data-r="133.27" data-i="17" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 18 張照片" style="aspect-ratio:520/693;background-position:0 75.2031%"></span></a>
+<a class="tile" href="#019" data-k="019" data-r="133.27" data-i="18" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 19 張照片" style="aspect-ratio:520/693;background-position:0 87.9985%"></span></a>
+<a class="tile" href="#020" data-k="020" data-r="125.0" data-i="19" data-s="02"><span class="ph" role="img" aria-label="拍什麼都ok 第 20 張照片" style="aspect-ratio:520/650;background-position:0 100.0%"></span></a>
+<a class="tile" href="#021" data-k="021" data-r="133.27" data-i="20" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 21 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#022" data-k="022" data-r="125.0" data-i="21" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 22 張照片" style="aspect-ratio:520/650;background-position:0 11.5231%"></span></a>
+<a class="tile" href="#023" data-k="023" data-r="133.27" data-i="22" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 23 張照片" style="aspect-ratio:520/693;background-position:0 22.492%"></span></a>
+<a class="tile" href="#024" data-k="024" data-r="131.73" data-i="23" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 24 張照片" style="aspect-ratio:520/685;background-position:0 34.0525%"></span></a>
+<a class="tile" href="#025" data-k="025" data-r="125.0" data-i="24" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 25 張照片" style="aspect-ratio:520/650;background-position:0 45.2444%"></span></a>
+<a class="tile" href="#026" data-k="026" data-r="125.0" data-i="25" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 26 張照片" style="aspect-ratio:520/650;background-position:0 56.0525%"></span></a>
+<a class="tile" href="#027" data-k="027" data-r="125.0" data-i="26" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 27 張照片" style="aspect-ratio:520/650;background-position:0 66.8607%"></span></a>
+<a class="tile" href="#028" data-k="028" data-r="125.0" data-i="27" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 28 張照片" style="aspect-ratio:520/650;background-position:0 77.6688%"></span></a>
+<a class="tile" href="#029" data-k="029" data-r="125.0" data-i="28" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 29 張照片" style="aspect-ratio:520/650;background-position:0 88.4769%"></span></a>
+<a class="tile" href="#030" data-k="030" data-r="133.27" data-i="29" data-s="03"><span class="ph" role="img" aria-label="拍什麼都ok 第 30 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#031" data-k="031" data-r="125.0" data-i="30" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 31 張照片" style="aspect-ratio:520/650;background-position:0 0.0%"></span></a>
+<a class="tile" href="#032" data-k="032" data-r="125.0" data-i="31" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 32 張照片" style="aspect-ratio:520/650;background-position:0 11.3796%"></span></a>
+<a class="tile" href="#033" data-k="033" data-r="100.19" data-i="32" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 33 張照片" style="aspect-ratio:520/521;background-position:0 22.2565%"></span></a>
+<a class="tile" href="#034" data-k="034" data-r="133.27" data-i="33" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 34 張照片" style="aspect-ratio:520/693;background-position:0 32.1221%"></span></a>
+<a class="tile" href="#035" data-k="035" data-r="125.19" data-i="34" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 35 張照片" style="aspect-ratio:520/651;background-position:0 44.0203%"></span></a>
+<a class="tile" href="#036" data-k="036" data-r="125.0" data-i="35" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 36 張照片" style="aspect-ratio:520/650;background-position:0 55.4097%"></span></a>
+<a class="tile" href="#037" data-k="037" data-r="133.27" data-i="36" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 37 張照片" style="aspect-ratio:520/693;background-position:0 67.2958%"></span></a>
+<a class="tile" href="#038" data-k="038" data-r="125.0" data-i="37" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 38 張照片" style="aspect-ratio:520/650;background-position:0 78.9216%"></span></a>
+<a class="tile" href="#039" data-k="039" data-r="131.73" data-i="38" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 39 張照片" style="aspect-ratio:520/685;background-position:0 90.8578%"></span></a>
+<a class="tile" href="#040" data-k="040" data-r="99.81" data-i="39" data-s="04"><span class="ph" role="img" aria-label="拍什麼都ok 第 40 張照片" style="aspect-ratio:520/519;background-position:0 100.0%"></span></a>
+<a class="tile" href="#041" data-k="041" data-r="133.27" data-i="40" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 41 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#042" data-k="042" data-r="133.46" data-i="41" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 42 張照片" style="aspect-ratio:520/694;background-position:0 11.3458%"></span></a>
+<a class="tile" href="#043" data-k="043" data-r="133.27" data-i="42" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 43 張照片" style="aspect-ratio:520/693;background-position:0 22.7042%"></span></a>
+<a class="tile" href="#044" data-k="044" data-r="133.27" data-i="43" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 44 張照片" style="aspect-ratio:520/693;background-position:0 34.0481%"></span></a>
+<a class="tile" href="#045" data-k="045" data-r="133.27" data-i="44" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 45 張照片" style="aspect-ratio:520/693;background-position:0 45.392%"></span></a>
+<a class="tile" href="#046" data-k="046" data-r="125.0" data-i="45" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 46 張照片" style="aspect-ratio:520/650;background-position:0 56.3394%"></span></a>
+<a class="tile" href="#047" data-k="047" data-r="125.0" data-i="46" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 47 張照片" style="aspect-ratio:520/650;background-position:0 66.9051%"></span></a>
+<a class="tile" href="#048" data-k="048" data-r="133.27" data-i="47" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 48 張照片" style="aspect-ratio:520/693;background-position:0 78.016%"></span></a>
+<a class="tile" href="#049" data-k="049" data-r="133.27" data-i="48" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 49 張照片" style="aspect-ratio:520/693;background-position:0 89.36%"></span></a>
+<a class="tile" href="#050" data-k="050" data-r="125.0" data-i="49" data-s="05"><span class="ph" role="img" aria-label="拍什麼都ok 第 50 張照片" style="aspect-ratio:520/650;background-position:0 100.0%"></span></a>
+<a class="tile" href="#051" data-k="051" data-r="136.54" data-i="50" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 51 張照片" style="aspect-ratio:520/710;background-position:0 0.0%"></span></a>
+<a class="tile" href="#052" data-k="052" data-r="125.0" data-i="51" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 52 張照片" style="aspect-ratio:520/650;background-position:0 11.7569%"></span></a>
+<a class="tile" href="#053" data-k="053" data-r="133.27" data-i="52" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 53 張照片" style="aspect-ratio:520/693;background-position:0 22.6818%"></span></a>
+<a class="tile" href="#054" data-k="054" data-r="125.0" data-i="53" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 54 張照片" style="aspect-ratio:520/650;background-position:0 33.9957%"></span></a>
+<a class="tile" href="#055" data-k="055" data-r="133.27" data-i="54" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 55 張照片" style="aspect-ratio:520/693;background-position:0 45.0801%"></span></a>
+<a class="tile" href="#056" data-k="056" data-r="125.0" data-i="55" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 56 張照片" style="aspect-ratio:520/650;background-position:0 56.2345%"></span></a>
+<a class="tile" href="#057" data-k="057" data-r="125.0" data-i="56" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 57 張照片" style="aspect-ratio:520/650;background-position:0 66.9978%"></span></a>
+<a class="tile" href="#058" data-k="058" data-r="133.27" data-i="57" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 58 張照片" style="aspect-ratio:520/693;background-position:0 78.3189%"></span></a>
+<a class="tile" href="#059" data-k="059" data-r="125.0" data-i="58" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 59 張照片" style="aspect-ratio:520/650;background-position:0 89.2366%"></span></a>
+<a class="tile" href="#060" data-k="060" data-r="125.0" data-i="59" data-s="06"><span class="ph" role="img" aria-label="拍什麼都ok 第 60 張照片" style="aspect-ratio:520/650;background-position:0 100.0%"></span></a>
+<a class="tile" href="#061" data-k="061" data-r="125.0" data-i="60" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 61 張照片" style="aspect-ratio:520/650;background-position:0 0.0%"></span></a>
+<a class="tile" href="#062" data-k="062" data-r="133.27" data-i="61" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 62 張照片" style="aspect-ratio:520/693;background-position:0 11.1397%"></span></a>
+<a class="tile" href="#063" data-k="063" data-r="133.27" data-i="62" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 63 張照片" style="aspect-ratio:520/693;background-position:0 23.0163%"></span></a>
+<a class="tile" href="#064" data-k="064" data-r="133.27" data-i="63" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 64 張照片" style="aspect-ratio:520/693;background-position:0 34.8929%"></span></a>
+<a class="tile" href="#065" data-k="065" data-r="75.0" data-i="64" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 65 張照片" style="aspect-ratio:520/390;background-position:0 44.4607%"></span></a>
+<a class="tile" href="#066" data-k="066" data-r="139.04" data-i="65" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 66 張照片" style="aspect-ratio:520/723;background-position:0 53.7295%"></span></a>
+<a class="tile" href="#067" data-k="067" data-r="133.27" data-i="66" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 67 張照片" style="aspect-ratio:520/693;background-position:0 65.844%"></span></a>
+<a class="tile" href="#068" data-k="068" data-r="125.0" data-i="67" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 68 張照片" style="aspect-ratio:520/650;background-position:0 77.1521%"></span></a>
+<a class="tile" href="#069" data-k="069" data-r="125.0" data-i="68" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 69 張照片" style="aspect-ratio:520/650;background-position:0 88.2103%"></span></a>
+<a class="tile" href="#070" data-k="070" data-r="133.27" data-i="69" data-s="07"><span class="ph" role="img" aria-label="拍什麼都ok 第 70 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#071" data-k="071" data-r="133.27" data-i="70" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 71 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#072" data-k="072" data-r="133.27" data-i="71" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 72 張照片" style="aspect-ratio:520/693;background-position:0 11.6706%"></span></a>
+<a class="tile" href="#073" data-k="073" data-r="100.19" data-i="72" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 73 張照片" style="aspect-ratio:520/521;background-position:0 22.6841%"></span></a>
+<a class="tile" href="#074" data-k="074" data-r="133.27" data-i="73" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 74 張照片" style="aspect-ratio:520/693;background-position:0 32.1152%"></span></a>
+<a class="tile" href="#075" data-k="075" data-r="100.19" data-i="74" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 75 張照片" style="aspect-ratio:520/521;background-position:0 42.5532%"></span></a>
+<a class="tile" href="#076" data-k="076" data-r="133.27" data-i="75" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 76 張照片" style="aspect-ratio:520/693;background-position:0 52.5598%"></span></a>
+<a class="tile" href="#077" data-k="077" data-r="125.0" data-i="76" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 77 張照片" style="aspect-ratio:520/650;background-position:0 63.7686%"></span></a>
+<a class="tile" href="#078" data-k="078" data-r="133.27" data-i="77" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 78 張照片" style="aspect-ratio:520/693;background-position:0 75.1768%"></span></a>
+<a class="tile" href="#079" data-k="079" data-r="150.19" data-i="78" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 79 張照片" style="aspect-ratio:520/781;background-position:0 88.1538%"></span></a>
+<a class="tile" href="#080" data-k="080" data-r="133.27" data-i="79" data-s="08"><span class="ph" role="img" aria-label="拍什麼都ok 第 80 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#081" data-k="081" data-r="133.27" data-i="80" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 81 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#082" data-k="082" data-r="133.27" data-i="81" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 82 張照片" style="aspect-ratio:520/693;background-position:0 11.1111%"></span></a>
+<a class="tile" href="#083" data-k="083" data-r="133.27" data-i="82" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 83 張照片" style="aspect-ratio:520/693;background-position:0 22.2222%"></span></a>
+<a class="tile" href="#084" data-k="084" data-r="133.27" data-i="83" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 84 張照片" style="aspect-ratio:520/693;background-position:0 33.3333%"></span></a>
+<a class="tile" href="#085" data-k="085" data-r="133.27" data-i="84" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 85 張照片" style="aspect-ratio:520/693;background-position:0 44.4444%"></span></a>
+<a class="tile" href="#086" data-k="086" data-r="133.27" data-i="85" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 86 張照片" style="aspect-ratio:520/693;background-position:0 55.5556%"></span></a>
+<a class="tile" href="#087" data-k="087" data-r="133.27" data-i="86" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 87 張照片" style="aspect-ratio:520/693;background-position:0 66.6667%"></span></a>
+<a class="tile" href="#088" data-k="088" data-r="133.27" data-i="87" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 88 張照片" style="aspect-ratio:520/693;background-position:0 77.7778%"></span></a>
+<a class="tile" href="#089" data-k="089" data-r="133.27" data-i="88" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 89 張照片" style="aspect-ratio:520/693;background-position:0 88.8889%"></span></a>
+<a class="tile" href="#090" data-k="090" data-r="133.27" data-i="89" data-s="09"><span class="ph" role="img" aria-label="拍什麼都ok 第 90 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#091" data-k="091" data-r="133.27" data-i="90" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 91 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#092" data-k="092" data-r="133.27" data-i="91" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 92 張照片" style="aspect-ratio:520/693;background-position:0 11.1882%"></span></a>
+<a class="tile" href="#093" data-k="093" data-r="133.27" data-i="92" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 93 張照片" style="aspect-ratio:520/693;background-position:0 22.3765%"></span></a>
+<a class="tile" href="#094" data-k="094" data-r="133.27" data-i="93" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 94 張照片" style="aspect-ratio:520/693;background-position:0 33.5647%"></span></a>
+<a class="tile" href="#095" data-k="095" data-r="133.27" data-i="94" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 95 張照片" style="aspect-ratio:520/693;background-position:0 44.753%"></span></a>
+<a class="tile" href="#096" data-k="096" data-r="133.27" data-i="95" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 96 張照片" style="aspect-ratio:520/693;background-position:0 55.9412%"></span></a>
+<a class="tile" href="#097" data-k="097" data-r="133.27" data-i="96" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 97 張照片" style="aspect-ratio:520/693;background-position:0 67.1295%"></span></a>
+<a class="tile" href="#098" data-k="098" data-r="125.0" data-i="97" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 98 張照片" style="aspect-ratio:520/650;background-position:0 77.7778%"></span></a>
+<a class="tile" href="#099" data-k="099" data-r="133.27" data-i="98" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 99 張照片" style="aspect-ratio:520/693;background-position:0 88.8118%"></span></a>
+<a class="tile" href="#100" data-k="100" data-r="133.27" data-i="99" data-s="10"><span class="ph" role="img" aria-label="拍什麼都ok 第 100 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#101" data-k="101" data-r="133.27" data-i="100" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 101 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#102" data-k="102" data-r="133.27" data-i="101" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 102 張照片" style="aspect-ratio:520/693;background-position:0 11.6962%"></span></a>
+<a class="tile" href="#103" data-k="103" data-r="73.27" data-i="102" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 103 張照片" style="aspect-ratio:520/381;background-position:0 22.2222%"></span></a>
+<a class="tile" href="#104" data-k="104" data-r="133.27" data-i="103" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 104 張照片" style="aspect-ratio:520/693;background-position:0 29.8228%"></span></a>
+<a class="tile" href="#105" data-k="105" data-r="133.27" data-i="104" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 105 張照片" style="aspect-ratio:520/693;background-position:0 41.519%"></span></a>
+<a class="tile" href="#106" data-k="106" data-r="133.27" data-i="105" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 106 張照片" style="aspect-ratio:520/693;background-position:0 53.2152%"></span></a>
+<a class="tile" href="#107" data-k="107" data-r="133.27" data-i="106" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 107 張照片" style="aspect-ratio:520/693;background-position:0 64.9114%"></span></a>
+<a class="tile" href="#108" data-k="108" data-r="133.27" data-i="107" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 108 張照片" style="aspect-ratio:520/693;background-position:0 76.6076%"></span></a>
+<a class="tile" href="#109" data-k="109" data-r="133.27" data-i="108" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 109 張照片" style="aspect-ratio:520/693;background-position:0 88.3038%"></span></a>
+<a class="tile" href="#110" data-k="110" data-r="133.27" data-i="109" data-s="11"><span class="ph" role="img" aria-label="拍什麼都ok 第 110 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#111" data-k="111" data-r="133.27" data-i="110" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 111 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#112" data-k="112" data-r="133.27" data-i="111" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 112 張照片" style="aspect-ratio:520/693;background-position:0 11.1093%"></span></a>
+<a class="tile" href="#113" data-k="113" data-r="125.0" data-i="112" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 113 張照片" style="aspect-ratio:520/650;background-position:0 22.0665%"></span></a>
+<a class="tile" href="#114" data-k="114" data-r="133.27" data-i="113" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 114 張照片" style="aspect-ratio:520/693;background-position:0 32.6387%"></span></a>
+<a class="tile" href="#115" data-k="115" data-r="133.27" data-i="114" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 115 張照片" style="aspect-ratio:520/693;background-position:0 43.748%"></span></a>
+<a class="tile" href="#116" data-k="116" data-r="133.27" data-i="115" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 116 張照片" style="aspect-ratio:520/693;background-position:0 54.8573%"></span></a>
+<a class="tile" href="#117" data-k="117" data-r="133.27" data-i="116" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 117 張照片" style="aspect-ratio:520/693;background-position:0 65.9667%"></span></a>
+<a class="tile" href="#118" data-k="118" data-r="133.27" data-i="117" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 118 張照片" style="aspect-ratio:520/693;background-position:0 77.076%"></span></a>
+<a class="tile" href="#119" data-k="119" data-r="125.0" data-i="118" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 119 張照片" style="aspect-ratio:520/650;background-position:0 87.5816%"></span></a>
+<a class="tile" href="#120" data-k="120" data-r="150.0" data-i="119" data-s="12"><span class="ph" role="img" aria-label="拍什麼都ok 第 120 張照片" style="aspect-ratio:520/780;background-position:0 100.0%"></span></a>
+<a class="tile" href="#121" data-k="121" data-r="133.27" data-i="120" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 121 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#122" data-k="122" data-r="133.27" data-i="121" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 122 張照片" style="aspect-ratio:520/693;background-position:0 11.1882%"></span></a>
+<a class="tile" href="#123" data-k="123" data-r="133.27" data-i="122" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 123 張照片" style="aspect-ratio:520/693;background-position:0 22.3765%"></span></a>
+<a class="tile" href="#124" data-k="124" data-r="133.27" data-i="123" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 124 張照片" style="aspect-ratio:520/693;background-position:0 33.5647%"></span></a>
+<a class="tile" href="#125" data-k="125" data-r="133.27" data-i="124" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 125 張照片" style="aspect-ratio:520/693;background-position:0 44.753%"></span></a>
+<a class="tile" href="#126" data-k="126" data-r="133.27" data-i="125" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 126 張照片" style="aspect-ratio:520/693;background-position:0 55.9412%"></span></a>
+<a class="tile" href="#127" data-k="127" data-r="133.27" data-i="126" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 127 張照片" style="aspect-ratio:520/693;background-position:0 67.1295%"></span></a>
+<a class="tile" href="#128" data-k="128" data-r="125.0" data-i="127" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 128 張照片" style="aspect-ratio:520/650;background-position:0 77.7778%"></span></a>
+<a class="tile" href="#129" data-k="129" data-r="133.27" data-i="128" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 129 張照片" style="aspect-ratio:520/693;background-position:0 88.8118%"></span></a>
+<a class="tile" href="#130" data-k="130" data-r="133.27" data-i="129" data-s="13"><span class="ph" role="img" aria-label="拍什麼都ok 第 130 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#131" data-k="131" data-r="133.27" data-i="130" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 131 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#132" data-k="132" data-r="150.19" data-i="131" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 132 張照片" style="aspect-ratio:520/781;background-position:0 11.1991%"></span></a>
+<a class="tile" href="#133" data-k="133" data-r="133.27" data-i="132" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 133 張照片" style="aspect-ratio:520/693;background-position:0 23.4863%"></span></a>
+<a class="tile" href="#134" data-k="134" data-r="133.27" data-i="133" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 134 張照片" style="aspect-ratio:520/693;background-position:0 34.5284%"></span></a>
+<a class="tile" href="#135" data-k="135" data-r="132.12" data-i="134" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 135 張照片" style="aspect-ratio:520/687;background-position:0 45.5269%"></span></a>
+<a class="tile" href="#136" data-k="136" data-r="133.27" data-i="135" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 136 張照片" style="aspect-ratio:520/693;background-position:0 56.5169%"></span></a>
+<a class="tile" href="#137" data-k="137" data-r="133.27" data-i="136" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 137 張照片" style="aspect-ratio:520/693;background-position:0 67.559%"></span></a>
+<a class="tile" href="#138" data-k="138" data-r="125.0" data-i="137" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 138 張照片" style="aspect-ratio:520/650;background-position:0 78.0661%"></span></a>
+<a class="tile" href="#139" data-k="139" data-r="133.27" data-i="138" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 139 張照片" style="aspect-ratio:520/693;background-position:0 88.9579%"></span></a>
+<a class="tile" href="#140" data-k="140" data-r="133.27" data-i="139" data-s="14"><span class="ph" role="img" aria-label="拍什麼都ok 第 140 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#141" data-k="141" data-r="133.27" data-i="140" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 141 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#142" data-k="142" data-r="133.27" data-i="141" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 142 張照片" style="aspect-ratio:520/693;background-position:0 11.5828%"></span></a>
+<a class="tile" href="#143" data-k="143" data-r="125.0" data-i="142" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 143 張照片" style="aspect-ratio:520/650;background-position:0 23.0003%"></span></a>
+<a class="tile" href="#144" data-k="144" data-r="133.27" data-i="143" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 144 張照片" style="aspect-ratio:520/693;background-position:0 34.0298%"></span></a>
+<a class="tile" href="#145" data-k="145" data-r="133.27" data-i="144" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 145 張照片" style="aspect-ratio:520/693;background-position:0 45.6126%"></span></a>
+<a class="tile" href="#146" data-k="146" data-r="133.27" data-i="145" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 146 張照片" style="aspect-ratio:520/693;background-position:0 57.1954%"></span></a>
+<a class="tile" href="#147" data-k="147" data-r="100.0" data-i="146" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 147 張照片" style="aspect-ratio:520/520;background-position:0 66.8454%"></span></a>
+<a class="tile" href="#148" data-k="148" data-r="125.0" data-i="147" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 148 張照片" style="aspect-ratio:520/650;background-position:0 76.9167%"></span></a>
+<a class="tile" href="#149" data-k="149" data-r="134.23" data-i="148" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 149 張照片" style="aspect-ratio:520/698;background-position:0 88.4075%"></span></a>
+<a class="tile" href="#150" data-k="150" data-r="133.27" data-i="149" data-s="15"><span class="ph" role="img" aria-label="拍什麼都ok 第 150 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#151" data-k="151" data-r="133.27" data-i="150" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 151 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#152" data-k="152" data-r="133.27" data-i="151" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 152 張照片" style="aspect-ratio:520/693;background-position:0 11.0315%"></span></a>
+<a class="tile" href="#153" data-k="153" data-r="133.27" data-i="152" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 153 張照片" style="aspect-ratio:520/693;background-position:0 22.063%"></span></a>
+<a class="tile" href="#154" data-k="154" data-r="150.19" data-i="153" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 154 張照片" style="aspect-ratio:520/781;background-position:0 33.5647%"></span></a>
+<a class="tile" href="#155" data-k="155" data-r="133.27" data-i="154" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 155 張照片" style="aspect-ratio:520/693;background-position:0 45.5269%"></span></a>
+<a class="tile" href="#156" data-k="156" data-r="133.27" data-i="155" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 156 張照片" style="aspect-ratio:520/693;background-position:0 56.5584%"></span></a>
+<a class="tile" href="#157" data-k="157" data-r="133.27" data-i="156" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 157 張照片" style="aspect-ratio:520/693;background-position:0 67.5899%"></span></a>
+<a class="tile" href="#158" data-k="158" data-r="133.27" data-i="157" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 158 張照片" style="aspect-ratio:520/693;background-position:0 78.6215%"></span></a>
+<a class="tile" href="#159" data-k="159" data-r="133.27" data-i="158" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 159 張照片" style="aspect-ratio:520/693;background-position:0 89.653%"></span></a>
+<a class="tile" href="#160" data-k="160" data-r="125.0" data-i="159" data-s="16"><span class="ph" role="img" aria-label="拍什麼都ok 第 160 張照片" style="aspect-ratio:520/650;background-position:0 100.0%"></span></a>
+<a class="tile" href="#161" data-k="161" data-r="133.27" data-i="160" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 161 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#162" data-k="162" data-r="133.27" data-i="161" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 162 張照片" style="aspect-ratio:520/693;background-position:0 11.5097%"></span></a>
+<a class="tile" href="#163" data-k="163" data-r="133.27" data-i="162" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 163 張照片" style="aspect-ratio:520/693;background-position:0 23.0194%"></span></a>
+<a class="tile" href="#164" data-k="164" data-r="100.0" data-i="163" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 164 張照片" style="aspect-ratio:520/520;background-position:0 33.5647%"></span></a>
+<a class="tile" href="#165" data-k="165" data-r="133.27" data-i="164" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 165 張照片" style="aspect-ratio:520/693;background-position:0 43.1656%"></span></a>
+<a class="tile" href="#166" data-k="166" data-r="125.0" data-i="165" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 166 張照片" style="aspect-ratio:520/650;background-position:0 54.2876%"></span></a>
+<a class="tile" href="#167" data-k="167" data-r="133.27" data-i="166" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 167 張照片" style="aspect-ratio:520/693;background-position:0 65.4709%"></span></a>
+<a class="tile" href="#168" data-k="168" data-r="133.27" data-i="167" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 168 張照片" style="aspect-ratio:520/693;background-position:0 76.9806%"></span></a>
+<a class="tile" href="#169" data-k="169" data-r="133.27" data-i="168" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 169 張照片" style="aspect-ratio:520/693;background-position:0 88.4903%"></span></a>
+<a class="tile" href="#170" data-k="170" data-r="133.27" data-i="169" data-s="17"><span class="ph" role="img" aria-label="拍什麼都ok 第 170 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#171" data-k="171" data-r="133.27" data-i="170" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 171 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#172" data-k="172" data-r="133.27" data-i="171" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 172 張照片" style="aspect-ratio:520/693;background-position:0 11.3458%"></span></a>
+<a class="tile" href="#173" data-k="173" data-r="133.27" data-i="172" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 173 張照片" style="aspect-ratio:520/693;background-position:0 22.6916%"></span></a>
+<a class="tile" href="#174" data-k="174" data-r="133.27" data-i="173" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 174 張照片" style="aspect-ratio:520/693;background-position:0 34.0373%"></span></a>
+<a class="tile" href="#175" data-k="175" data-r="125.0" data-i="174" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 175 張照片" style="aspect-ratio:520/650;background-position:0 45.0658%"></span></a>
+<a class="tile" href="#176" data-k="176" data-r="133.27" data-i="175" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 176 張照片" style="aspect-ratio:520/693;background-position:0 56.0249%"></span></a>
+<a class="tile" href="#177" data-k="177" data-r="133.27" data-i="176" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 177 張照片" style="aspect-ratio:520/693;background-position:0 67.3707%"></span></a>
+<a class="tile" href="#178" data-k="178" data-r="125.0" data-i="177" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 178 張照片" style="aspect-ratio:520/650;background-position:0 78.1662%"></span></a>
+<a class="tile" href="#179" data-k="179" data-r="125.0" data-i="178" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 179 張照片" style="aspect-ratio:520/650;background-position:0 88.7335%"></span></a>
+<a class="tile" href="#180" data-k="180" data-r="133.27" data-i="179" data-s="18"><span class="ph" role="img" aria-label="拍什麼都ok 第 180 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#181" data-k="181" data-r="133.27" data-i="180" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 181 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#182" data-k="182" data-r="125.0" data-i="181" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 182 張照片" style="aspect-ratio:520/650;background-position:0 11.1882%"></span></a>
+<a class="tile" href="#183" data-k="183" data-r="133.27" data-i="182" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 183 張照片" style="aspect-ratio:520/693;background-position:0 21.8338%"></span></a>
+<a class="tile" href="#184" data-k="184" data-r="133.27" data-i="183" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 184 張照片" style="aspect-ratio:520/693;background-position:0 33.1003%"></span></a>
+<a class="tile" href="#185" data-k="185" data-r="125.0" data-i="184" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 185 張照片" style="aspect-ratio:520/650;background-position:0 44.0588%"></span></a>
+<a class="tile" href="#186" data-k="186" data-r="133.27" data-i="185" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 186 張照片" style="aspect-ratio:520/693;background-position:0 54.9342%"></span></a>
+<a class="tile" href="#187" data-k="187" data-r="133.27" data-i="186" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 187 張照片" style="aspect-ratio:520/693;background-position:0 66.2006%"></span></a>
+<a class="tile" href="#188" data-k="188" data-r="133.27" data-i="187" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 188 張照片" style="aspect-ratio:520/693;background-position:0 77.4671%"></span></a>
+<a class="tile" href="#189" data-k="189" data-r="133.27" data-i="188" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 189 張照片" style="aspect-ratio:520/693;background-position:0 88.7335%"></span></a>
+<a class="tile" href="#190" data-k="190" data-r="133.27" data-i="189" data-s="19"><span class="ph" role="img" aria-label="拍什麼都ok 第 190 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#191" data-k="191" data-r="125.0" data-i="190" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 191 張照片" style="aspect-ratio:520/650;background-position:0 0.0%"></span></a>
+<a class="tile" href="#192" data-k="192" data-r="133.27" data-i="191" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 192 張照片" style="aspect-ratio:520/693;background-position:0 10.494%"></span></a>
+<a class="tile" href="#193" data-k="193" data-r="133.27" data-i="192" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 193 張照片" style="aspect-ratio:520/693;background-position:0 21.6823%"></span></a>
+<a class="tile" href="#194" data-k="194" data-r="133.27" data-i="193" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 194 張照片" style="aspect-ratio:520/693;background-position:0 32.8705%"></span></a>
+<a class="tile" href="#195" data-k="195" data-r="133.27" data-i="194" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 195 張照片" style="aspect-ratio:520/693;background-position:0 44.0588%"></span></a>
+<a class="tile" href="#196" data-k="196" data-r="133.27" data-i="195" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 196 張照片" style="aspect-ratio:520/693;background-position:0 55.247%"></span></a>
+<a class="tile" href="#197" data-k="197" data-r="133.27" data-i="196" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 197 張照片" style="aspect-ratio:520/693;background-position:0 66.4353%"></span></a>
+<a class="tile" href="#198" data-k="198" data-r="133.27" data-i="197" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 198 張照片" style="aspect-ratio:520/693;background-position:0 77.6235%"></span></a>
+<a class="tile" href="#199" data-k="199" data-r="133.27" data-i="198" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 199 張照片" style="aspect-ratio:520/693;background-position:0 88.8118%"></span></a>
+<a class="tile" href="#200" data-k="200" data-r="133.27" data-i="199" data-s="20"><span class="ph" role="img" aria-label="拍什麼都ok 第 200 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#201" data-k="201" data-r="75.0" data-i="200" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 201 張照片" style="aspect-ratio:520/390;background-position:0 0.0%"></span></a>
+<a class="tile" href="#202" data-k="202" data-r="133.27" data-i="201" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 202 張照片" style="aspect-ratio:520/693;background-position:0 6.5723%"></span></a>
+<a class="tile" href="#203" data-k="203" data-r="133.27" data-i="202" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 203 張照片" style="aspect-ratio:520/693;background-position:0 18.2508%"></span></a>
+<a class="tile" href="#204" data-k="204" data-r="133.27" data-i="203" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 204 張照片" style="aspect-ratio:520/693;background-position:0 29.9292%"></span></a>
+<a class="tile" href="#205" data-k="205" data-r="133.27" data-i="204" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 205 張照片" style="aspect-ratio:520/693;background-position:0 41.6077%"></span></a>
+<a class="tile" href="#206" data-k="206" data-r="133.27" data-i="205" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 206 張照片" style="aspect-ratio:520/693;background-position:0 53.2861%"></span></a>
+<a class="tile" href="#207" data-k="207" data-r="133.27" data-i="206" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 207 張照片" style="aspect-ratio:520/693;background-position:0 64.9646%"></span></a>
+<a class="tile" href="#208" data-k="208" data-r="133.27" data-i="207" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 208 張照片" style="aspect-ratio:520/693;background-position:0 76.6431%"></span></a>
+<a class="tile" href="#209" data-k="209" data-r="133.27" data-i="208" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 209 張照片" style="aspect-ratio:520/693;background-position:0 88.3215%"></span></a>
+<a class="tile" href="#210" data-k="210" data-r="133.27" data-i="209" data-s="21"><span class="ph" role="img" aria-label="拍什麼都ok 第 210 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#211" data-k="211" data-r="133.27" data-i="210" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 211 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#212" data-k="212" data-r="75.0" data-i="211" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 212 張照片" style="aspect-ratio:520/390;background-position:0 11.4432%"></span></a>
+<a class="tile" href="#213" data-k="213" data-r="133.27" data-i="212" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 213 張照片" style="aspect-ratio:520/693;background-position:0 18.825%"></span></a>
+<a class="tile" href="#214" data-k="214" data-r="133.27" data-i="213" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 214 張照片" style="aspect-ratio:520/693;background-position:0 30.8708%"></span></a>
+<a class="tile" href="#215" data-k="215" data-r="100.0" data-i="214" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 215 張照片" style="aspect-ratio:520/520;background-position:0 41.6639%"></span></a>
+<a class="tile" href="#216" data-k="216" data-r="133.27" data-i="215" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 216 張照片" style="aspect-ratio:520/693;background-position:0 51.9555%"></span></a>
+<a class="tile" href="#217" data-k="217" data-r="133.27" data-i="216" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 217 張照片" style="aspect-ratio:520/693;background-position:0 64.0014%"></span></a>
+<a class="tile" href="#218" data-k="218" data-r="133.27" data-i="217" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 218 張照片" style="aspect-ratio:520/693;background-position:0 76.0473%"></span></a>
+<a class="tile" href="#219" data-k="219" data-r="131.73" data-i="218" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 219 張照片" style="aspect-ratio:520/685;background-position:0 87.9708%"></span></a>
+<a class="tile" href="#220" data-k="220" data-r="133.27" data-i="219" data-s="22"><span class="ph" role="img" aria-label="拍什麼都ok 第 220 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#221" data-k="221" data-r="133.27" data-i="220" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 221 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#222" data-k="222" data-r="100.0" data-i="221" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 222 張照片" style="aspect-ratio:520/520;background-position:0 11.5925%"></span></a>
+<a class="tile" href="#223" data-k="223" data-r="133.27" data-i="222" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 223 張照片" style="aspect-ratio:520/693;background-position:0 20.8958%"></span></a>
+<a class="tile" href="#224" data-k="224" data-r="133.27" data-i="223" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 224 張照片" style="aspect-ratio:520/693;background-position:0 32.8338%"></span></a>
+<a class="tile" href="#225" data-k="225" data-r="100.0" data-i="224" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 225 張照片" style="aspect-ratio:520/520;background-position:0 43.4761%"></span></a>
+<a class="tile" href="#226" data-k="226" data-r="133.27" data-i="225" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 226 張照片" style="aspect-ratio:520/693;background-position:0 53.7295%"></span></a>
+<a class="tile" href="#227" data-k="227" data-r="125.0" data-i="226" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 227 張照片" style="aspect-ratio:520/650;background-position:0 65.1847%"></span></a>
+<a class="tile" href="#228" data-k="228" data-r="125.0" data-i="227" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 228 張照片" style="aspect-ratio:520/650;background-position:0 76.2996%"></span></a>
+<a class="tile" href="#229" data-k="229" data-r="133.27" data-i="228" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 229 張照片" style="aspect-ratio:520/693;background-position:0 88.062%"></span></a>
+<a class="tile" href="#230" data-k="230" data-r="133.27" data-i="229" data-s="23"><span class="ph" role="img" aria-label="拍什麼都ok 第 230 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#231" data-k="231" data-r="133.27" data-i="230" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 231 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#232" data-k="232" data-r="133.27" data-i="231" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 232 張照片" style="aspect-ratio:520/693;background-position:0 11.1111%"></span></a>
+<a class="tile" href="#233" data-k="233" data-r="133.27" data-i="232" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 233 張照片" style="aspect-ratio:520/693;background-position:0 22.2222%"></span></a>
+<a class="tile" href="#234" data-k="234" data-r="133.27" data-i="233" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 234 張照片" style="aspect-ratio:520/693;background-position:0 33.3333%"></span></a>
+<a class="tile" href="#235" data-k="235" data-r="133.27" data-i="234" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 235 張照片" style="aspect-ratio:520/693;background-position:0 44.4444%"></span></a>
+<a class="tile" href="#236" data-k="236" data-r="133.27" data-i="235" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 236 張照片" style="aspect-ratio:520/693;background-position:0 55.5556%"></span></a>
+<a class="tile" href="#237" data-k="237" data-r="133.27" data-i="236" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 237 張照片" style="aspect-ratio:520/693;background-position:0 66.6667%"></span></a>
+<a class="tile" href="#238" data-k="238" data-r="133.27" data-i="237" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 238 張照片" style="aspect-ratio:520/693;background-position:0 77.7778%"></span></a>
+<a class="tile" href="#239" data-k="239" data-r="133.27" data-i="238" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 239 張照片" style="aspect-ratio:520/693;background-position:0 88.8889%"></span></a>
+<a class="tile" href="#240" data-k="240" data-r="133.27" data-i="239" data-s="24"><span class="ph" role="img" aria-label="拍什麼都ok 第 240 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#241" data-k="241" data-r="133.27" data-i="240" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 241 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#242" data-k="242" data-r="125.0" data-i="241" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 242 張照片" style="aspect-ratio:520/650;background-position:0 11.1254%"></span></a>
+<a class="tile" href="#243" data-k="243" data-r="133.27" data-i="242" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 243 張照片" style="aspect-ratio:520/693;background-position:0 21.7103%"></span></a>
+<a class="tile" href="#244" data-k="244" data-r="133.27" data-i="243" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 244 張照片" style="aspect-ratio:520/693;background-position:0 32.913%"></span></a>
+<a class="tile" href="#245" data-k="245" data-r="133.27" data-i="244" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 245 張照片" style="aspect-ratio:520/693;background-position:0 44.1157%"></span></a>
+<a class="tile" href="#246" data-k="246" data-r="131.73" data-i="245" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 246 張照片" style="aspect-ratio:520/685;background-position:0 55.247%"></span></a>
+<a class="tile" href="#247" data-k="247" data-r="133.27" data-i="246" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 247 張照片" style="aspect-ratio:520/693;background-position:0 66.3919%"></span></a>
+<a class="tile" href="#248" data-k="248" data-r="133.27" data-i="247" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 248 張照片" style="aspect-ratio:520/693;background-position:0 77.5946%"></span></a>
+<a class="tile" href="#249" data-k="249" data-r="133.27" data-i="248" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 249 張照片" style="aspect-ratio:520/693;background-position:0 88.7973%"></span></a>
+<a class="tile" href="#250" data-k="250" data-r="133.27" data-i="249" data-s="25"><span class="ph" role="img" aria-label="拍什麼都ok 第 250 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#251" data-k="251" data-r="133.27" data-i="250" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 251 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#252" data-k="252" data-r="133.27" data-i="251" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 252 張照片" style="aspect-ratio:520/693;background-position:0 11.0333%"></span></a>
+<a class="tile" href="#253" data-k="253" data-r="150.0" data-i="252" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 253 張照片" style="aspect-ratio:520/780;background-position:0 22.3765%"></span></a>
+<a class="tile" href="#254" data-k="254" data-r="133.27" data-i="253" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 254 張照片" style="aspect-ratio:520/693;background-position:0 34.485%"></span></a>
+<a class="tile" href="#255" data-k="255" data-r="133.27" data-i="254" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 255 張照片" style="aspect-ratio:520/693;background-position:0 45.5182%"></span></a>
+<a class="tile" href="#256" data-k="256" data-r="133.27" data-i="255" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 256 張照片" style="aspect-ratio:520/693;background-position:0 56.5515%"></span></a>
+<a class="tile" href="#257" data-k="257" data-r="133.27" data-i="256" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 257 張照片" style="aspect-ratio:520/693;background-position:0 67.5848%"></span></a>
+<a class="tile" href="#258" data-k="258" data-r="133.27" data-i="257" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 258 張照片" style="aspect-ratio:520/693;background-position:0 78.6181%"></span></a>
+<a class="tile" href="#259" data-k="259" data-r="133.27" data-i="258" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 259 張照片" style="aspect-ratio:520/693;background-position:0 89.6513%"></span></a>
+<a class="tile" href="#260" data-k="260" data-r="125.0" data-i="259" data-s="26"><span class="ph" role="img" aria-label="拍什麼都ok 第 260 張照片" style="aspect-ratio:520/650;background-position:0 100.0%"></span></a>
+<a class="tile" href="#261" data-k="261" data-r="133.27" data-i="260" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 261 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#262" data-k="262" data-r="133.27" data-i="261" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 262 張照片" style="aspect-ratio:520/693;background-position:0 11.7637%"></span></a>
+<a class="tile" href="#263" data-k="263" data-r="125.0" data-i="262" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 263 張照片" style="aspect-ratio:520/650;background-position:0 23.3569%"></span></a>
+<a class="tile" href="#264" data-k="264" data-r="133.27" data-i="263" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 264 張照片" style="aspect-ratio:520/693;background-position:0 34.5612%"></span></a>
+<a class="tile" href="#265" data-k="265" data-r="75.0" data-i="264" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 265 張照片" style="aspect-ratio:520/390;background-position:0 44.0588%"></span></a>
+<a class="tile" href="#266" data-k="266" data-r="133.27" data-i="265" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 266 張照片" style="aspect-ratio:520/693;background-position:0 52.9452%"></span></a>
+<a class="tile" href="#267" data-k="267" data-r="133.27" data-i="266" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 267 張照片" style="aspect-ratio:520/693;background-position:0 64.7089%"></span></a>
+<a class="tile" href="#268" data-k="268" data-r="133.27" data-i="267" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 268 張照片" style="aspect-ratio:520/693;background-position:0 76.4726%"></span></a>
+<a class="tile" href="#269" data-k="269" data-r="133.27" data-i="268" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 269 張照片" style="aspect-ratio:520/693;background-position:0 88.2363%"></span></a>
+<a class="tile" href="#270" data-k="270" data-r="133.27" data-i="269" data-s="27"><span class="ph" role="img" aria-label="拍什麼都ok 第 270 張照片" style="aspect-ratio:520/693;background-position:0 100.0%"></span></a>
+<a class="tile" href="#271" data-k="271" data-r="133.27" data-i="270" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 271 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
+<a class="tile" href="#272" data-k="272" data-r="133.27" data-i="271" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 272 張照片" style="aspect-ratio:520/693;background-position:0 10.9548%"></span></a>
+<a class="tile" href="#273" data-k="273" data-r="133.27" data-i="272" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 273 張照片" style="aspect-ratio:520/693;background-position:0 21.9096%"></span></a>
+<a class="tile" href="#274" data-k="274" data-r="133.27" data-i="273" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 274 張照片" style="aspect-ratio:520/693;background-position:0 32.8644%"></span></a>
+<a class="tile" href="#275" data-k="275" data-r="150.0" data-i="274" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 275 張照片" style="aspect-ratio:520/780;background-position:0 44.4302%"></span></a>
+<a class="tile" href="#276" data-k="276" data-r="150.0" data-i="275" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 276 張照片" style="aspect-ratio:520/780;background-position:0 56.9322%"></span></a>
+<a class="tile" href="#277" data-k="277" data-r="150.0" data-i="276" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 277 張照片" style="aspect-ratio:520/780;background-position:0 69.4342%"></span></a>
+<a class="tile" href="#278" data-k="278" data-r="66.54" data-i="277" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 278 張照片" style="aspect-ratio:520/346;background-position:0 76.6072%"></span></a>
+<a class="tile" href="#279" data-k="279" data-r="150.0" data-i="278" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 279 張照片" style="aspect-ratio:520/780;background-position:0 87.482%"></span></a>
+<a class="tile" href="#280" data-k="280" data-r="150.19" data-i="279" data-s="28"><span class="ph" role="img" aria-label="拍什麼都ok 第 280 張照片" style="aspect-ratio:520/781;background-position:0 100.0%"></span></a>
+<a class="tile" href="#281" data-k="281" data-r="150.0" data-i="280" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 281 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#282" data-k="282" data-r="150.19" data-i="281" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 282 張照片" style="aspect-ratio:520/781;background-position:0 11.1095%"></span></a>
+<a class="tile" href="#283" data-k="283" data-r="150.0" data-i="282" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 283 張照片" style="aspect-ratio:520/780;background-position:0 22.2301%"></span></a>
+<a class="tile" href="#284" data-k="284" data-r="150.0" data-i="283" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 284 張照片" style="aspect-ratio:520/780;background-position:0 33.3381%"></span></a>
+<a class="tile" href="#285" data-k="285" data-r="150.19" data-i="284" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 285 張照片" style="aspect-ratio:520/781;background-position:0 44.4524%"></span></a>
+<a class="tile" href="#286" data-k="286" data-r="150.0" data-i="285" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 286 張照片" style="aspect-ratio:520/780;background-position:0 55.5682%"></span></a>
+<a class="tile" href="#287" data-k="287" data-r="150.0" data-i="286" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 287 張照片" style="aspect-ratio:520/780;background-position:0 66.6762%"></span></a>
+<a class="tile" href="#288" data-k="288" data-r="150.0" data-i="287" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 288 張照片" style="aspect-ratio:520/780;background-position:0 77.7841%"></span></a>
+<a class="tile" href="#289" data-k="289" data-r="150.0" data-i="288" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 289 張照片" style="aspect-ratio:520/780;background-position:0 88.8921%"></span></a>
+<a class="tile" href="#290" data-k="290" data-r="150.0" data-i="289" data-s="29"><span class="ph" role="img" aria-label="拍什麼都ok 第 290 張照片" style="aspect-ratio:520/780;background-position:0 100.0%"></span></a>
+<a class="tile" href="#291" data-k="291" data-r="150.0" data-i="290" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 291 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#292" data-k="292" data-r="150.0" data-i="291" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 292 張照片" style="aspect-ratio:520/780;background-position:0 11.1079%"></span></a>
+<a class="tile" href="#293" data-k="293" data-r="150.19" data-i="292" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 293 張照片" style="aspect-ratio:520/781;background-position:0 22.2191%"></span></a>
+<a class="tile" href="#294" data-k="294" data-r="150.0" data-i="293" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 294 張照片" style="aspect-ratio:520/780;background-position:0 33.3381%"></span></a>
+<a class="tile" href="#295" data-k="295" data-r="150.19" data-i="294" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 295 張照片" style="aspect-ratio:520/781;background-position:0 44.4524%"></span></a>
+<a class="tile" href="#296" data-k="296" data-r="150.0" data-i="295" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 296 張照片" style="aspect-ratio:520/780;background-position:0 55.5682%"></span></a>
+<a class="tile" href="#297" data-k="297" data-r="150.0" data-i="296" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 297 張照片" style="aspect-ratio:520/780;background-position:0 66.6762%"></span></a>
+<a class="tile" href="#298" data-k="298" data-r="150.0" data-i="297" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 298 張照片" style="aspect-ratio:520/780;background-position:0 77.7841%"></span></a>
+<a class="tile" href="#299" data-k="299" data-r="150.0" data-i="298" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 299 張照片" style="aspect-ratio:520/780;background-position:0 88.8921%"></span></a>
+<a class="tile" href="#300" data-k="300" data-r="150.0" data-i="299" data-s="30"><span class="ph" role="img" aria-label="拍什麼都ok 第 300 張照片" style="aspect-ratio:520/780;background-position:0 100.0%"></span></a>
+<a class="tile" href="#301" data-k="301" data-r="150.0" data-i="300" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 301 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#302" data-k="302" data-r="150.19" data-i="301" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 302 張照片" style="aspect-ratio:520/781;background-position:0 11.1079%"></span></a>
+<a class="tile" href="#303" data-k="303" data-r="150.19" data-i="302" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 303 張照片" style="aspect-ratio:520/781;background-position:0 22.2301%"></span></a>
+<a class="tile" href="#304" data-k="304" data-r="150.0" data-i="303" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 304 張照片" style="aspect-ratio:520/780;background-position:0 33.3476%"></span></a>
+<a class="tile" href="#305" data-k="305" data-r="150.0" data-i="304" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 305 張照片" style="aspect-ratio:520/780;background-position:0 44.4539%"></span></a>
+<a class="tile" href="#306" data-k="306" data-r="150.0" data-i="305" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 306 張照片" style="aspect-ratio:520/780;background-position:0 55.5603%"></span></a>
+<a class="tile" href="#307" data-k="307" data-r="150.0" data-i="306" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 307 張照片" style="aspect-ratio:520/780;background-position:0 66.6667%"></span></a>
+<a class="tile" href="#308" data-k="308" data-r="150.0" data-i="307" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 308 張照片" style="aspect-ratio:520/780;background-position:0 77.773%"></span></a>
+<a class="tile" href="#309" data-k="309" data-r="150.0" data-i="308" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 309 張照片" style="aspect-ratio:520/780;background-position:0 88.8794%"></span></a>
+<a class="tile" href="#310" data-k="310" data-r="150.19" data-i="309" data-s="31"><span class="ph" role="img" aria-label="拍什麼都ok 第 310 張照片" style="aspect-ratio:520/781;background-position:0 100.0%"></span></a>
+<a class="tile" href="#311" data-k="311" data-r="150.0" data-i="310" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 311 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#312" data-k="312" data-r="150.0" data-i="311" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 312 張照片" style="aspect-ratio:520/780;background-position:0 11.1079%"></span></a>
+<a class="tile" href="#313" data-k="313" data-r="150.0" data-i="312" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 313 張照片" style="aspect-ratio:520/780;background-position:0 22.2159%"></span></a>
+<a class="tile" href="#314" data-k="314" data-r="150.0" data-i="313" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 314 張照片" style="aspect-ratio:520/780;background-position:0 33.3238%"></span></a>
+<a class="tile" href="#315" data-k="315" data-r="150.19" data-i="314" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 315 張照片" style="aspect-ratio:520/781;background-position:0 44.4381%"></span></a>
+<a class="tile" href="#316" data-k="316" data-r="150.0" data-i="315" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 316 張照片" style="aspect-ratio:520/780;background-position:0 55.554%"></span></a>
+<a class="tile" href="#317" data-k="317" data-r="150.0" data-i="316" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 317 張照片" style="aspect-ratio:520/780;background-position:0 66.6619%"></span></a>
+<a class="tile" href="#318" data-k="318" data-r="150.0" data-i="317" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 318 張照片" style="aspect-ratio:520/780;background-position:0 77.7699%"></span></a>
+<a class="tile" href="#319" data-k="319" data-r="150.0" data-i="318" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 319 張照片" style="aspect-ratio:520/780;background-position:0 88.8778%"></span></a>
+<a class="tile" href="#320" data-k="320" data-r="150.19" data-i="319" data-s="32"><span class="ph" role="img" aria-label="拍什麼都ok 第 320 張照片" style="aspect-ratio:520/781;background-position:0 100.0%"></span></a>
+<a class="tile" href="#321" data-k="321" data-r="150.0" data-i="320" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 321 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#322" data-k="322" data-r="150.19" data-i="321" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 322 張照片" style="aspect-ratio:520/781;background-position:0 11.1079%"></span></a>
+<a class="tile" href="#323" data-k="323" data-r="150.0" data-i="322" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 323 張照片" style="aspect-ratio:520/780;background-position:0 22.227%"></span></a>
+<a class="tile" href="#324" data-k="324" data-r="150.0" data-i="323" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 324 張照片" style="aspect-ratio:520/780;background-position:0 33.3333%"></span></a>
+<a class="tile" href="#325" data-k="325" data-r="150.19" data-i="324" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 325 張照片" style="aspect-ratio:520/781;background-position:0 44.446%"></span></a>
+<a class="tile" href="#326" data-k="326" data-r="150.0" data-i="325" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 326 張照片" style="aspect-ratio:520/780;background-position:0 55.5603%"></span></a>
+<a class="tile" href="#327" data-k="327" data-r="150.0" data-i="326" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 327 張照片" style="aspect-ratio:520/780;background-position:0 66.6667%"></span></a>
+<a class="tile" href="#328" data-k="328" data-r="150.0" data-i="327" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 328 張照片" style="aspect-ratio:520/780;background-position:0 77.773%"></span></a>
+<a class="tile" href="#329" data-k="329" data-r="150.0" data-i="328" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 329 張照片" style="aspect-ratio:520/780;background-position:0 88.8794%"></span></a>
+<a class="tile" href="#330" data-k="330" data-r="150.19" data-i="329" data-s="33"><span class="ph" role="img" aria-label="拍什麼都ok 第 330 張照片" style="aspect-ratio:520/781;background-position:0 100.0%"></span></a>
+<a class="tile" href="#331" data-k="331" data-r="150.0" data-i="330" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 331 張照片" style="aspect-ratio:520/780;background-position:0 0.0%"></span></a>
+<a class="tile" href="#332" data-k="332" data-r="150.0" data-i="331" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 332 張照片" style="aspect-ratio:520/780;background-position:0 11.1032%"></span></a>
+<a class="tile" href="#333" data-k="333" data-r="150.19" data-i="332" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 333 張照片" style="aspect-ratio:520/781;background-position:0 22.2096%"></span></a>
+<a class="tile" href="#334" data-k="334" data-r="150.19" data-i="333" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 334 張照片" style="aspect-ratio:520/781;background-position:0 33.3286%"></span></a>
+<a class="tile" href="#335" data-k="335" data-r="150.0" data-i="334" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 335 張照片" style="aspect-ratio:520/780;background-position:0 44.4413%"></span></a>
+<a class="tile" href="#336" data-k="336" data-r="150.19" data-i="335" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 336 張照片" style="aspect-ratio:520/781;background-position:0 55.5524%"></span></a>
+<a class="tile" href="#337" data-k="337" data-r="150.19" data-i="336" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 337 張照片" style="aspect-ratio:520/781;background-position:0 66.6714%"></span></a>
+<a class="tile" href="#338" data-k="338" data-r="150.0" data-i="337" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 338 張照片" style="aspect-ratio:520/780;background-position:0 77.7794%"></span></a>
+<a class="tile" href="#339" data-k="339" data-r="150.19" data-i="338" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 339 張照片" style="aspect-ratio:520/781;background-position:0 88.8952%"></span></a>
+<a class="tile" href="#340" data-k="340" data-r="150.0" data-i="339" data-s="34"><span class="ph" role="img" aria-label="拍什麼都ok 第 340 張照片" style="aspect-ratio:520/780;background-position:0 100.0%"></span></a>
+<a class="tile" href="#341" data-k="341" data-r="150.0" data-i="340" data-s="35"><span class="ph" role="img" aria-label="拍什麼都ok 第 341 張照片" style="aspect-ratio:520/780;background-position:0 0%"></span></a>
+      </div>
+    </div>
+  </section>
+</main>
+<dialog class="lb" id="lb" aria-label="照片檢視">
+  <div class="lb-veil"></div>
+  <div class="lb-stage">
+    <div class="lb-frame"></div>
+    <span class="lb-spin" aria-hidden="true"></span>
+  </div>
+  <button type="button" class="lb-close-sr">關閉</button>
+  <button type="button" class="lb-btn lb-prev" aria-label="上一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+  <button type="button" class="lb-btn lb-next" aria-label="下一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
+  <div class="lb-meta"><span class="lb-idx" aria-live="polite"></span></div>
+</dialog>
+<script>(() => {
+  // ---- photos are stored encrypted (AES-GCM); decrypted in memory and shown only as CSS backgrounds
+  const KA = [103, 233, 43, 212, 120, 125, 42, 143, 228, 105, 14, 212, 227, 89, 96, 52, 49, 183, 172, 126, 49, 99, 241, 48, 180, 157, 23, 118, 201, 80, 171, 243], KM = [169, 39, 176, 76, 11, 28, 181];
+  let keyP = null;
+  const getKey = () => keyP || (keyP = crypto.subtle.importKey('raw', new Uint8Array(KA.map((v, i) => v ^ KM[i % KM.length])), 'AES-GCM', false, ['decrypt']));
+  const cache = new Map(); let current = '';
+  const dec = (path) => {
+    if (cache.has(path)) { const p = cache.get(path); cache.delete(path); cache.set(path, p); return p; }
+    const p = (async () => {
+      const r = await fetch(path); if (!r.ok) throw new Error(r.status);
+      const buf = await r.arrayBuffer();
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, await getKey(), buf.slice(12));
+      return URL.createObjectURL(new Blob([plain], { type: 'image/webp' }));
+    })();
+    cache.set(path, p); p.catch(() => cache.delete(path));
+    // keep at most 40 large photos in memory
+    const big = [...cache.keys()].filter(k => k.includes('/V/'));
+    for (const k of big.slice(0, Math.max(0, big.length - 40))) { if (k === current) continue; cache.get(k).then(u => URL.revokeObjectURL(u)).catch(() => {}); cache.delete(k); }
+    return p;
+  };
+  // ---- no saving: no context menu, no dragging, no save/print shortcuts
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
+  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && ['s', 'u', 'p'].includes(e.key.toLowerCase())) e.preventDefault(); });
+  const root = document.documentElement;
+  const grid = document.getElementById('grid');
+  const tiles = [...grid.querySelectorAll('.tile')];
+  const N = tiles.length;
+  const bigUrl = (k) => `img/V/${k}.dat`;
+  const sheetUrl = (s) => `img/S/${s}.dat`;
+  const sheetBlob = {};
+
+  // ---- grid thumbnails: a sprite sheet (10 photos) loads when its tiles come near, the rest trickle in afterwards
+  const bySheet = {}, loaded = {};
+  for (const t of tiles) (bySheet[t.dataset.s] ||= []).push(t);
+  const loadSheet = (sid) => {
+    if (loaded[sid]) return; loaded[sid] = true;
+    const list = bySheet[sid];
+    dec(sheetUrl(sid)).then(u => {
+      sheetBlob[sid] = u;
+      const im = new Image();
+      im.onload = () => list.forEach(t => { const ph = t.querySelector('.ph'); ph.style.setProperty('--bg', `url(${u})`); ph.classList.add('on'); t.classList.add('is-in'); });
+      im.src = u;
+    }).catch(() => list.forEach(t => t.classList.add('is-err')));
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { loadSheet(e.target.dataset.s); io.unobserve(e.target); } }), { rootMargin: '1200px 0px' });
+  tiles.forEach(t => io.observe(t));
+  const order = Object.keys(bySheet).sort();
+  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 200));
+  const trickle = () => { const nx = order.find(sid => !loaded[sid]); if (!nx) return; loadSheet(nx); idle(() => setTimeout(trickle, 120)); };
+  window.addEventListener('load', () => setTimeout(trickle, 600));
+  const warm = new Set();
+  const prefetch = (k) => { if (!warm.has(k)) { warm.add(k); dec(bigUrl(k)).catch(() => warm.delete(k)); } };
+  grid.addEventListener('pointerover', e => { const t = e.target.closest('.tile'); if (t) prefetch(t.dataset.k); });
+
+  // ---- masonry: each photo drops into the shortest column, in order; columns follow the width
+  let cols = 0;
+  function layout(force) {
+    const cs = getComputedStyle(root);
+    const target = parseFloat(cs.getPropertyValue('--col-target'));
+    const gap = parseFloat(cs.getPropertyValue('--tile-gap'));
+    const W = grid.clientWidth;
+    const n = Math.max(2, Math.floor((W + gap) / (target + gap)));
+    if (n === cols && !force) return;
+    cols = n;
+    const colW = (W - gap * (n - 1)) / n;
+    const els = Array.from({ length: n }, () => { const c = document.createElement('div'); c.className = 'col'; return c; });
+    const h = new Array(n).fill(0);
+    for (const t of tiles) {
+      let m = 0; for (let i = 1; i < n; i++) if (h[i] < h[m] - 1) m = i;
+      els[m].appendChild(t); h[m] += colW * (+t.dataset.r) / 100 + gap;
+    }
+    grid.replaceChildren(...els);
+  }
+  root.classList.add('js');
+  layout(true);
+  new ResizeObserver(() => layout(false)).observe(grid);
+
+  // ---- viewer
+  const lb = document.getElementById('lb');
+  const stage = lb.querySelector('.lb-stage');
+  const frame = lb.querySelector('.lb-frame');
+  const img = frame.appendChild(Object.assign(document.createElement('div'), { className: 'lb-img' }));
+  img.setAttribute('role', 'img');
+  const veil = lb.querySelector('.lb-veil');
+  const idx = lb.querySelector('.lb-idx');
+  const prev = lb.querySelector('.lb-prev');
+  const next = lb.querySelector('.lb-next');
+  const byIndex = tiles.slice().sort((a, b) => a.dataset.i - b.dataset.i);
+  let cur = -1, opener = null, token = 0;
+  let s = 1, tx = 0, ty = 0, dy = 0;          // zoom, pan, drag-down offset
+  const MAX = 4;
+
+  const apply = (anim) => {
+    frame.classList.toggle('anim', !!anim);
+    const k = dy ? Math.max(0.82, 1 - dy / 1400) : 1;
+    frame.style.transform = `translate(${tx}px, ${ty + dy}px) scale(${s * k})`;
+    veil.style.opacity = dy ? String(Math.max(0.15, 1 - dy / 320)) : '';
+    lb.classList.toggle('is-zoomed', s > 1.01);
+    lb.classList.toggle('is-dragging', dy > 0);
+  };
+  const center = () => { const r = stage.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+  const clampPan = () => {
+    const fw = frame.offsetWidth, fh = frame.offsetHeight;
+    const mx = Math.max(0, (fw * s - innerWidth) / 2) + (s > 1.01 ? 24 : 0);
+    const my = Math.max(0, (fh * s - innerHeight) / 2) + (s > 1.01 ? 24 : 0);
+    tx = Math.min(mx, Math.max(-mx, tx)); ty = Math.min(my, Math.max(-my, ty));
+  };
+  const zoomAt = (px, py, ns, fromS = s, fromX = tx, fromY = ty) => {
+    const c = center();
+    const qx = (px - c.x - fromX) / fromS, qy = (py - c.y - fromY) / fromS;
+    s = Math.min(MAX, Math.max(1, ns)); tx = px - c.x - qx * s; ty = py - c.y - qy * s;
+    if (s <= 1.01) { s = 1; tx = 0; ty = 0; }
+    clampPan();
+  };
+  const reset = (anim) => { s = 1; tx = 0; ty = 0; dy = 0; apply(anim); };
+  const toggleZoom = (x, y) => { if (s > 1.01) reset(true); else { zoomAt(x, y, 2.5); apply(true); } };
+
+  function show(i) {
+    if (i < 0 || i >= N) return;
+    cur = i; reset(false);
+    const t = byIndex[i], k = t.dataset.k, ph = t.querySelector('.ph');
+    frame.style.setProperty('--r', (+t.dataset.r) / 100);
+    frame.style.backgroundImage = sheetBlob[t.dataset.s] ? `url(${sheetBlob[t.dataset.s]})` : 'none';
+    frame.style.backgroundPosition = ph.style.backgroundPosition;
+    img.setAttribute('aria-label', ph.getAttribute('aria-label'));
+    idx.textContent = `${i + 1} / ${N}`;
+    prev.disabled = i === 0; next.disabled = i === N - 1;
+    const my = ++token;
+    img.classList.remove('ready'); lb.classList.add('is-loading');
+    current = bigUrl(k);
+    dec(current).then(u => {
+      const im = new Image();
+      im.onload = () => { if (my === token) { img.style.backgroundImage = `url(${u})`; img.classList.add('ready'); lb.classList.remove('is-loading'); } };
+      im.src = u;
+    }).catch(() => { if (my === token) lb.classList.remove('is-loading'); });
+    for (const j of [i - 1, i + 1, i + 2]) if (byIndex[j]) prefetch(byIndex[j].dataset.k);
+    history.replaceState(null, '', `${location.pathname}${location.search}#${k}`);
+  }
+  function openAt(i, from) { opener = from || null; if (!lb.open) lb.showModal(); show(i); }
+  const close = () => { if (lb.open) lb.close(); };
+  lb.addEventListener('close', () => {
+    token++; reset(false); img.style.backgroundImage = 'none'; current = '';
+    history.replaceState(null, '', `${location.pathname}${location.search}`);
+    const back = opener || byIndex[cur]; if (back) back.focus({ preventScroll: true });
+  });
+  lb.addEventListener('cancel', () => reset(false));
+
+  // touch opens on a clean tap (pointerup), so a suppressed click never leaves a tile dead; mouse and keyboard use click
+  let down = null, openedAt = -1e9;
+  grid.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') down = { x: e.clientX, y: e.clientY, t: performance.now(), tile: e.target.closest('.tile') }; });
+  grid.addEventListener('pointerup', e => {
+    const d = down; down = null;
+    if (!d || !d.tile || e.pointerType === 'mouse') return;
+    if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 10 && performance.now() - d.t < 600) { openedAt = performance.now(); openAt(+d.tile.dataset.i, d.tile); }
+  });
+  grid.addEventListener('pointercancel', () => { down = null; });
+  grid.addEventListener('click', e => {
+    const t = e.target.closest('.tile');
+    if (!t || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    if (performance.now() - openedAt < 800) return;
+    openAt(+t.dataset.i, t);
+  });
+  prev.addEventListener('click', () => show(cur - 1));
+  next.addEventListener('click', () => show(cur + 1));
+  lb.querySelector('.lb-close-sr').addEventListener('click', close);
+  lb.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); }
+    else if (e.key === '+' || e.key === '=') { const c = center(); zoomAt(c.x, c.y, s * 1.5); apply(true); }
+    else if (e.key === '-') { const c = center(); zoomAt(c.x, c.y, s / 1.5); apply(true); }
+  });
+
+  // ---- gestures: tap outside closes, drag down closes, swipe sideways turns, pinch / double-tap / click zooms, drag pans when zoomed
+  const pts = new Map();
+  let g = null, lastTap = { t: 0, x: 0, y: 0 };
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  const startOne = (e, moved) => ({ type: 'one', x0: e.clientX, y0: e.clientY, tx0: tx, ty0: ty, t0: performance.now(), moved, mode: moved ? (s > 1.01 ? 'pan' : null) : null, onFrame: !!e.target.closest('.lb-frame'), pointerType: e.pointerType });
+
+  stage.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    stage.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 1) g = startOne(e, false);
+    else if (pts.size === 2) { const [a, b] = [...pts.values()]; g = { type: 'pinch', d0: dist(a, b), m0: mid(a, b), s0: s, tx0: tx, ty0: ty }; dy = 0; }
+  });
+  stage.addEventListener('pointermove', e => {
+    if (!pts.has(e.pointerId) || !g) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (g.type === 'pinch' && pts.size >= 2) {
+      const [a, b] = [...pts.values()], m = mid(a, b);
+      zoomAt(g.m0.x, g.m0.y, g.s0 * dist(a, b) / g.d0, g.s0, g.tx0, g.ty0);
+      tx += m.x - g.m0.x; ty += m.y - g.m0.y; clampPan(); apply(false);
+      return;
+    }
+    if (g.type !== 'one') return;
+    const dx = e.clientX - g.x0, ddy = e.clientY - g.y0;
+    if (!g.moved && Math.hypot(dx, ddy) > 6) {
+      g.moved = true;
+      g.mode = s > 1.01 ? 'pan' : (Math.abs(ddy) > Math.abs(dx) ? (ddy > 0 ? 'down' : 'none') : 'swipe');
+    }
+    if (g.mode === 'pan') { tx = g.tx0 + dx; ty = g.ty0 + ddy; clampPan(); apply(false); }
+    else if (g.mode === 'down') { dy = Math.max(0, ddy); apply(false); }
+    else if (g.mode === 'swipe') { tx = dx * 0.5; apply(false); }
+  });
+  const end = (e) => {
+    if (!pts.has(e.pointerId)) return;
+    pts.delete(e.pointerId);
+    if (!g) return;
+    if (g.type === 'pinch') {
+      if (pts.size === 1) { const [p] = [...pts.values()]; g = { ...startOne({ clientX: p.x, clientY: p.y, target: frame, pointerType: 'touch' }, true) }; }
+      else if (pts.size === 0) { if (s < 1.05) reset(true); g = null; }
+      return;
+    }
+    if (pts.size) return;
+    const gg = g; g = null;
+    const dx = e.clientX - gg.x0;
+    if (!gg.moved) {
+      if (e.type === 'pointercancel') return;
+      if (!gg.onFrame) { if (s > 1.01) reset(true); else close(); return; }
+      if (gg.pointerType === 'mouse') { toggleZoom(e.clientX, e.clientY); return; }
+      const now = performance.now();
+      if (now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30) { lastTap.t = 0; toggleZoom(e.clientX, e.clientY); }
+      else lastTap = { t: now, x: e.clientX, y: e.clientY };
+      return;
+    }
+    if (gg.mode === 'down') { if (dy > 90) close(); else { dy = 0; apply(true); } }
+    else if (gg.mode === 'swipe') { if (Math.abs(dx) > 60 && byIndex[cur + (dx < 0 ? 1 : -1)]) show(cur + (dx < 0 ? 1 : -1)); else reset(true); }
+  };
+  stage.addEventListener('pointerup', end);
+  stage.addEventListener('pointercancel', end);
+  stage.addEventListener('wheel', e => {
+    e.preventDefault();
+    zoomAt(e.clientX, e.clientY, s * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0025)));
+    apply(false);
+  }, { passive: false });
+
+  // deep link: #<number> opens that photo
+  const h = location.hash.slice(1);
+  if (h) { const t = tiles.find(x => x.dataset.k === h); if (t) openAt(+t.dataset.i, t); }
+})();
+</script>
+</body>
+</html>
