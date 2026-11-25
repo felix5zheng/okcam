@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-uowm1SBduzfyIPrVK8a0Pm/PVDN/01rc22OGmU0kUgk='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-MSFOgWiiX82q09AINWI+NTKLp7MjX0YLxK5qheJQNVw=' 'sha256-ujtq+ZUBdPjFUOYu7YOuVrLFTVKmfUXRfF1sXJPZme4=' 'sha256-D3caKY73TRkcxqV2fgw47Yta+Zq5LjPKTcOZ6GLD+VQ='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#f6f3ee">
 <link rel="preload" href="img/S/01.dat" as="fetch" crossorigin>
@@ -38,7 +38,9 @@
   --text-xs: 12px; --text-sm: 14px; --text-md: 17px; --text-nav-title: 21px; --text-lead: 21px; --text-sub: 24px; --text-section: 40px; --text-title: 24px;
   --text-display: clamp(52px, 8vw, 96px); --text-display-s: 40px; --text-xl: 24px;
   --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 28px; --space-2xl: 52px; --space-3xl: 90px;
-  --radius-tile: 20px; --radius-buttons: 9999px;
+  --radius-tile: 20px; --radius-buttons: 9999px; --radius-md: 14px; --radius-pill: 9999px;
+  --font: var(--font-body); --dur: var(--dur-short); --ease: var(--ease-out);
+  --shadow-lift: 0 0 0 1px oklch(19% 0.024 52 / 0.06), 0 14px 30px -18px oklch(19% 0.024 52 / 0.35);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --dur-micro: 150ms; --dur-short: 240ms; --dur-long: 480ms;
   --container: 1440px; --gutter: 40px; --gap-columns: 20px; --section-gap: 90px; --z-sticky-nav: 300;
 }
@@ -80,6 +82,9 @@ body { font-size: var(--text-md); line-height: 1.47; letter-spacing: -0.016em; c
 .bar-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); min-height: var(--bar-h); }
 .bar-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: 0.012em; color: var(--color-ink); white-space: nowrap; }
 .bar-en { margin-left: var(--space-sm); font-size: var(--text-xs); font-weight: 400; letter-spacing: 0; color: var(--color-muted); }
+body { font-family: var(--font); }
+.bar-end { display: flex; align-items: center; gap: var(--space-md); }
+.lang-menu { background: var(--color-paper); }
 .bar-count { font-size: var(--text-xs); color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .band { background: var(--color-band); padding-block: var(--space-xl) var(--section-gap); }
@@ -150,18 +155,50 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
 @media (hover: none) { .tile:hover { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .lb-spin { animation: none; border-top-color: var(--veil-btn); } .tile:hover { transform: none; } }
 
+/* ok-i18n:start */
+/* ok-i18n：語言選單與各語言字體。顏色、圓角、陰影全部走頁面自己的 token。 */
+:root:lang(zh-Hans) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+:root:lang(ja) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; }
+:root:lang(ko) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+:root:lang(hi) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Kohinoor Devanagari", "Noto Sans Devanagari", "Nirmala UI", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Kohinoor Devanagari", "Noto Sans Devanagari", "Nirmala UI", sans-serif; }
+:root:lang(hi) body, :root:lang(ko) body, :root:lang(ja) body { letter-spacing: 0; }
+:root:lang(en), :root:lang(es), :root:lang(pt), :root:lang(ms), :root:lang(hi) { word-break: normal; overflow-wrap: break-word; }
+
+.lang { position: relative; flex: none; }
+.lang-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 9px; font: inherit; font-size: var(--text-xs, 12px); color: var(--color-ink-2); background: transparent; border: 1px solid var(--color-hairline); border-radius: var(--radius-pill, 9999px); cursor: pointer; white-space: nowrap; transition: color var(--dur, 240ms) var(--ease), border-color var(--dur, 240ms) var(--ease), background-color var(--dur, 240ms) var(--ease); }
+.lang-btn svg { width: 14px; height: 14px; flex: none; }
+.lang-btn:hover, .lang-btn[aria-expanded="true"] { color: var(--color-ink); border-color: var(--color-ink); }
+.lang-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; transition: none; }
+.lang-btn:active { background: var(--color-band); }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 176px; max-height: min(70dvh, 420px); overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--color-card); border-radius: var(--radius-md, 14px); box-shadow: var(--shadow-lift); }
+.lang-menu[hidden] { display: none; }
+.lang-menu button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 9px 12px; font: inherit; font-size: var(--text-sm, 14px); line-height: 1.35; letter-spacing: 0; color: var(--color-ink); background: transparent; border: 0; border-radius: 9px; cursor: pointer; text-align: left; }
+.lang-menu button[lang="zh-Hant"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif; }
+.lang-menu button[lang="zh-Hans"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif; }
+.lang-menu button[lang="ja"] { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+.lang-menu button[lang="ko"] { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+.lang-menu button[lang="hi"] { font-family: -apple-system, BlinkMacSystemFont, "Kohinoor Devanagari", "Noto Sans Devanagari", sans-serif; }
+.lang-menu button:hover { background: var(--color-band); }
+.lang-menu button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.lang-menu button[aria-checked="true"]::after { content: ""; width: 9px; height: 5px; margin-top: -3px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) { .lang-btn { transition: none; } }
+/* ok-i18n:end */
 </style>
 </head>
 <body>
 <header class="bar">
   <div class="container bar-in">
-    <span class="bar-title">拍什麼都ok<span class="bar-en">OK Cam - Snap Anything</span></span>
-    <span class="bar-count">341 張照片</span>
+    <span class="bar-title"><span data-i="name">拍什麼都ok</span><span class="bar-en" data-i="name_en">OK Cam - Snap Anything</span></span>
+    <span class="bar-end"><span class="bar-count" data-i="count">341 張照片</span>
+    <div class="lang" id="lang">
+  <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6.3"/><path d="M1.7 8h12.6M8 1.7c1.8 1.7 2.7 3.8 2.7 6.3S9.8 12.6 8 14.3M8 1.7C6.2 3.4 5.3 5.5 5.3 8s.9 4.6 2.7 6.3"/></svg><span id="langCur">繁中</span></button>
+  <ul class="lang-menu" id="langMenu" role="menu" aria-label="Language" hidden></ul>
+</div></span>
   </div>
 </header>
 <main>
-  <h1 class="visually-hidden">拍什麼都ok</h1>
-  <section class="band" aria-label="照片">
+  <h1 class="visually-hidden" data-i="name">拍什麼都ok</h1>
+  <section class="band" aria-label="照片" data-ia="aria-label:photos">
     <div class="container">
       <div class="grid" id="grid">
 <a class="tile" href="#001" data-k="001" data-r="133.27" data-i="0" data-s="01"><span class="ph" role="img" aria-label="拍什麼都ok 第 1 張照片" style="aspect-ratio:520/693;background-position:0 0.0%"></span></a>
@@ -509,14 +546,14 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
     </div>
   </section>
 </main>
-<dialog class="lb" id="lb" aria-label="照片檢視（按 Esc 或點照片外面關閉）" tabindex="-1">
+<dialog class="lb" id="lb" aria-label="照片檢視（按 Esc 或點照片外面關閉）" data-ia="aria-label:viewer" tabindex="-1">
   <div class="lb-veil"></div>
   <div class="lb-stage">
     <div class="lb-frame"></div>
     <span class="lb-spin" aria-hidden="true"></span>
   </div>
-  <button type="button" class="lb-btn lb-prev" aria-label="上一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
-  <button type="button" class="lb-btn lb-next" aria-label="下一張"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
+  <button type="button" class="lb-btn lb-prev" aria-label="上一張" data-ia="aria-label:prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+  <button type="button" class="lb-btn lb-next" aria-label="下一張" data-ia="aria-label:next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
   <div class="lb-meta"><span class="lb-idx" aria-live="polite"></span></div>
 </dialog>
 <script>(() => {
@@ -854,9 +891,100 @@ html:has(.lb[open]), html:has(.lb[open]) body { overflow: hidden; background: va
     apply(false);
   }, { passive: false });
 
+  // translated labels for the 341 tiles (only when the language module is on the page)
+  document.addEventListener('ok:lang', () => {
+    if (!window.OK) return;
+    const fmt = OK.t('tile');
+    tiles.forEach(t => t.querySelector('.ph').setAttribute('aria-label', OK.fmt(fmt, { n: +t.dataset.i + 1 })));
+    if (cur >= 0 && lb.open) img.setAttribute('aria-label', byIndex[cur].querySelector('.ph').getAttribute('aria-label'));
+  });
   // deep link: #<number> opens that photo
   const h = location.hash.slice(1);
   if (h) { const t = tiles.find(x => x.dataset.k === h); if (t) openAt(+t.dataset.i, t); }
+})();
+</script>
+<script>window.OK_I18N = {"_title":["拍什麼都ok | OK Cam - Snap Anything","拍什么都ok | OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything","OK Cam - Snap Anything"],"_desc":["拍什麼都ok 的 341 張照片，瀑布式排列，點開可放大瀏覽。","拍什么都ok 的 341 张照片，瀑布流排列，点开可放大浏览。","341 photos shot with OK Cam, in a masonry grid. Open any photo to zoom in.","OK Cam で撮った 341 枚の写真。タップすると拡大して見られます。","OK Cam으로 찍은 사진 341장. 사진을 열면 확대해서 볼 수 있어요.","341 fotos hechas con OK Cam. Abre cualquiera para ampliarla.","341 fotos feitas com o OK Cam. Abra qualquer uma para ampliar.","OK Cam से ली गई 341 फ़ोटो। किसी भी फ़ोटो को खोलकर ज़ूम करें।","341 foto yang dirakam dengan OK Cam. Buka mana-mana foto untuk zum."],"name":["拍什麼都ok","拍什么都ok","OK Cam","OK Cam","OK Cam","OK Cam","OK Cam","OK Cam","OK Cam"],"name_en":["OK Cam - Snap Anything","OK Cam - Snap Anything","Snap Anything","Snap Anything","Snap Anything","Snap Anything","Snap Anything","Snap Anything","Snap Anything"],"count":["341 張照片","341 张照片","341 photos","341 枚","사진 341장","341 fotos","341 fotos","341 फ़ोटो","341 foto"],"photos":["照片","照片","Photos","写真","사진","Fotos","Fotos","फ़ोटो","Foto"],"viewer":["照片檢視（按 Esc 或點照片外面關閉）","照片查看（按 Esc 或点照片外面关闭）","Photo viewer (press Esc or tap outside the photo to close)","写真ビューア（Esc キーか写真の外をタップで閉じる）","사진 뷰어 (Esc를 누르거나 사진 바깥을 탭하면 닫혀요)","Visor de fotos (pulsa Esc o toca fuera de la foto para cerrar)","Visualizador de fotos (pressione Esc ou toque fora da foto para fechar)","फ़ोटो व्यूअर (बंद करने के लिए Esc दबाएँ या फ़ोटो के बाहर टैप करें)","Pemapar foto (tekan Esc atau ketik di luar foto untuk tutup)"],"prev":["上一張","上一张","Previous photo","前の写真","이전 사진","Foto anterior","Foto anterior","पिछली फ़ोटो","Foto sebelumnya"],"next":["下一張","下一张","Next photo","次の写真","다음 사진","Foto siguiente","Próxima foto","अगली फ़ोटो","Foto seterusnya"],"tile":["拍什麼都ok 第 {n} 張照片","拍什么都ok 第 {n} 张照片","OK Cam photo {n}","OK Cam 写真 {n}","OK Cam 사진 {n}","Foto {n} de OK Cam","Foto {n} do OK Cam","OK Cam फ़ोटो {n}","Foto OK Cam {n}"]};</script>
+<script>// ok-i18n: imokahhhh.com 共用多國語言。順序 = 網址 ?lang= → 使用者上次選的（全站共用 ok-lang）→ 瀏覽器語言 → English
+// 用法：頁面先放一段 inline script 設定 window.OK_I18N = { key: [9 個語言] }（順序同 LANGS），再放這支程式。
+// 標記：data-i="key"（換 textContent；key 以 ! 結尾換 innerHTML）、data-ia="aria-label:key;title:key2"（換屬性）。
+// 特殊 key：_title（document.title）、_desc（meta description）。
+(function () {
+  var D = window.OK_I18N || {};
+  var LANGS = ['zh-Hant', 'zh-Hans', 'en', 'ja', 'ko', 'es', 'pt', 'hi', 'ms'];
+  var NAMES = { 'zh-Hant': '繁體中文', 'zh-Hans': '简体中文', en: 'English', ja: '日本語', ko: '한국어', es: 'Español', pt: 'Português', hi: 'हिन्दी', ms: 'Bahasa Melayu' };
+  var SHORT = { 'zh-Hant': '繁中', 'zh-Hans': '简中', en: 'EN', ja: '日本語', ko: '한국어', es: 'ES', pt: 'PT', hi: 'हिं', ms: 'MS' };
+  var cur = 'zh-Hant';
+  function norm(t) {
+    t = String(t || '').toLowerCase();
+    if (t.indexOf('zh') === 0) return /hant|-tw|-hk|-mo/.test(t) ? 'zh-Hant' : 'zh-Hans';
+    var b = t.split('-')[0];
+    if (b === 'id') return 'ms';
+    return LANGS.indexOf(b) >= 0 ? b : null;
+  }
+  function detect() {
+    var q = /[?&]lang=([\w-]+)/.exec(location.search);
+    if (q) { var n = LANGS.indexOf(q[1]) >= 0 ? q[1] : norm(q[1]); if (n) return n; }
+    try {
+      var saved = localStorage.getItem('ok-lang') || localStorage.getItem('bk-lang');
+      if (LANGS.indexOf(saved) >= 0) return saved;
+    } catch (e) {}
+    var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language];
+    for (var i = 0; i < list.length; i++) { var l = norm(list[i]); if (l) return l; }
+    return 'en';
+  }
+  function t(key, lang) {
+    var v = D[key]; if (!v) return '';
+    var s = v[LANGS.indexOf(lang || cur)];
+    return s == null || s === '' ? (v[2] || v[0]) : s;   // 缺翻譯時退回英文，再退回繁中
+  }
+  function fmt(s, vars) { return String(s).replace(/\{(\w+)\}/g, function (m, k) { return vars && k in vars ? vars[k] : m; }); }
+  function apply(lang) {
+    cur = lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i]').forEach(function (el) {
+      var k = el.getAttribute('data-i'), v = t(k);
+      if (!v) return;
+      if (k.slice(-1) === '!') el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-ia]').forEach(function (el) {
+      el.getAttribute('data-ia').split(';').forEach(function (pair) {
+        var p = pair.split(':'); if (p.length === 2 && D[p[1]]) el.setAttribute(p[0].trim(), t(p[1].trim()));
+      });
+    });
+    if (D._title) document.title = t('_title');
+    var md = document.querySelector('meta[name="description"]'); if (md && D._desc) md.setAttribute('content', t('_desc'));
+    var c = document.getElementById('langCur'); if (c) { c.textContent = SHORT[lang]; }
+    var b = document.getElementById('langBtn'); if (b) b.setAttribute('aria-label', 'Language: ' + NAMES[lang]);
+    document.querySelectorAll('#langMenu [role="menuitemradio"]').forEach(function (x) { x.setAttribute('aria-checked', String(x.getAttribute('lang') === lang)); });
+    document.dispatchEvent(new CustomEvent('ok:lang', { detail: lang }));
+  }
+  window.OK = { t: t, fmt: fmt, lang: function () { return cur; }, apply: apply, LANGS: LANGS };
+
+  // 語言選單：地球圖示 + 簡稱，點開是各語言的原文名稱
+  var btn = document.getElementById('langBtn'), menu = document.getElementById('langMenu'), wrap = document.getElementById('lang');
+  if (btn && menu && wrap) {
+    LANGS.forEach(function (l) {
+      var li = document.createElement('li'); li.setAttribute('role', 'none');
+      var x = document.createElement('button');
+      x.type = 'button'; x.setAttribute('role', 'menuitemradio'); x.setAttribute('lang', l); x.textContent = NAMES[l];
+      x.addEventListener('click', function () {
+        try { localStorage.setItem('ok-lang', l); } catch (e) {}
+        close(); apply(l); btn.focus();
+      });
+      li.appendChild(x); menu.appendChild(li);
+    });
+    var open = function () { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); var c = menu.querySelector('[aria-checked="true"]') || menu.querySelector('button'); c.focus(); };
+    var close = function () { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+    btn.addEventListener('click', function () { if (menu.hidden) open(); else close(); });
+    document.addEventListener('click', function (e) { if (!menu.hidden && !wrap.contains(e.target)) close(); });
+    menu.addEventListener('keydown', function (e) {
+      var items = Array.prototype.slice.call(menu.querySelectorAll('button')), i = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') { close(); btn.focus(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    });
+  }
+  apply(detect());
 })();
 </script>
 </body>
