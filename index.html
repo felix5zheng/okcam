@@ -3,8 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-vGT8sbPg3tml2zz7QNqEMSiQRiCDnGINycvU+n8M4MA='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U=' 'sha256-NWSZraITg+KFlTzpLZ/g8i5Pypdy35SD7ZccGBHOPqw='; style-src 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preload" href="img/S/01.dat" as="fetch" crossorigin>
+<link rel="preload" href="img/S/02.dat" as="fetch" crossorigin>
+<link rel="preload" href="img/S/03.dat" as="fetch" crossorigin>
 <title>拍什麼都ok | OK Cam - Snap Anything</title>
 <script>document.documentElement.classList.add("js")</script>
 <meta name="description" content="拍什麼都ok 的 341 張照片，瀑布式排列，點開可放大瀏覽。">
@@ -94,19 +97,22 @@ body { font-size: var(--text-md); line-height: 1.47; letter-spacing: -0.016em; c
 .tile.is-err::after { content: "這張沒有載入成功"; color: var(--color-muted); font-size: var(--text-sm); }
 
 .lb:focus { outline: none; }
-.lb { border: 0; padding: 0; margin: 0; inset: 0; width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; background: transparent; color: var(--on-veil); overflow: hidden;
+.lb { border: 0; padding: 0; margin: 0; inset: 0; width: 100%; max-width: 100%; height: 100lvh; max-height: none; background: transparent; color: var(--on-veil); overflow: visible;
   opacity: 0; transition: opacity var(--dur-short) var(--ease-out), display var(--dur-short) allow-discrete, overlay var(--dur-short) allow-discrete; }
 .lb[open] { opacity: 1; }
 @starting-style { .lb[open] { opacity: 0; } }
 .lb::backdrop { background: transparent; }
-.lb-veil { position: absolute; inset: 0; background: var(--veil); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition: opacity var(--dur-short) var(--ease-out); }
+.lb-veil { position: fixed; inset: -25vh 0; background: var(--veil); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition: opacity var(--dur-short) var(--ease-out); }
 .lb.is-dragging .lb-veil { transition: none; }
-.lb-stage { position: absolute; inset: 0; display: grid; place-items: center; touch-action: none; overscroll-behavior: contain; }
+.lb-stage { position: fixed; inset: 0 0 auto 0; height: 100dvh; display: grid; place-items: center; touch-action: none; overscroll-behavior: contain; }
 .lb-frame { --r: 1.333; --lb-gap: 24px; position: relative; height: min(calc(100dvh - 2 * var(--lb-gap)), calc((100vw - 2 * var(--lb-gap)) * var(--r))); aspect-ratio: 1 / var(--r); max-width: calc(100vw - 2 * var(--lb-gap)); border-radius: 14px; overflow: hidden;
-  background-color: var(--veil-btn); background-size: 100% auto; background-repeat: no-repeat; transform-origin: center; will-change: transform; cursor: zoom-in; }
+  background-color: transparent; background-size: 100% auto; background-repeat: no-repeat; transform-origin: center; will-change: transform; cursor: zoom-in; }
 .lb-frame.anim { transition: transform var(--dur-short) var(--ease-out); }
 .lb-stage > .lb-frame { grid-area: 1 / 1; }
 .lb-ghost { pointer-events: none; visibility: hidden; }
+.lb-ghost .lb-img { opacity: 1; transition: none; }
+html:has(.lb[open]) { overflow: hidden; }
+.tile { content-visibility: auto; contain-intrinsic-size: auto 320px; }
 .lb.is-zoomed .lb-frame { cursor: grab; }
 .lb.is-zoomed .lb-frame:active { cursor: grabbing; }
 .lb-img { display: block; width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity var(--dur-short) var(--ease-out); user-select: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; pointer-events: none; }
@@ -652,6 +658,17 @@ html:has(.lb[open]) { overflow: hidden; }
   };
   const reset = (anim) => { s = 1; tx = 0; ty = 0; dy = 0; apply(anim); };
 
+  // return focus to the tile only for keyboard users, so touch users get no leftover ring
+  let usingKeys = false;
+  addEventListener('keydown', () => { usingKeys = true; }, true);
+  addEventListener('pointerdown', () => { usingKeys = false; }, true);
+  // keep the grid behind the viewer on the photo being looked at
+  const follow = (t, smooth) => {
+    const r = t.getBoundingClientRect(), vh = innerHeight, bar = 60;
+    if (r.top >= bar && r.bottom <= vh - 20) return;
+    const y = scrollY + r.top - (vh - r.height) / 2;
+    window.scrollTo({ top: Math.max(0, y), behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' });
+  };
   function show(i) {
     if (i < 0 || i >= N) return;
     cur = i; reset(false);
@@ -671,12 +688,12 @@ html:has(.lb[open]) { overflow: hidden; }
     } else {
     img.classList.remove('ready'); lb.classList.add('is-loading');
     dec(current).then(u => {
-      const im = new Image();
-      im.onload = () => { if (my === token) { img.style.backgroundImage = `url(${u})`; img.classList.add('ready'); lb.classList.remove('is-loading'); } };
-      im.src = u;
+      const im = new Image(); im.src = u;
+      (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { if (my === token) { img.style.backgroundImage = `url(${u})`; img.classList.add('ready'); lb.classList.remove('is-loading'); } });
     }).catch(() => { if (my === token) lb.classList.remove('is-loading'); });
     }
-    for (const j of [i - 1, i + 1, i + 2]) if (byIndex[j]) prefetch(byIndex[j].dataset.k);
+    for (const j of [i + 1, i - 1, i + 2, i - 2, i + 3]) if (byIndex[j]) prefetch(byIndex[j].dataset.k);
+    follow(t, lb.open);
     history.replaceState(null, '', `${location.pathname}${location.search}#${k}`);
   }
   function openAt(i, from) { opener = from || null; if (!lb.open) { lb.showModal(); lb.focus({ preventScroll: true }); } show(i); }
@@ -704,7 +721,7 @@ html:has(.lb[open]) { overflow: hidden; }
   lb.addEventListener('close', () => {
     token++; reset(false); img.style.backgroundImage = 'none'; current = '';
     history.replaceState(null, '', `${location.pathname}${location.search}`);
-    const back = opener || byIndex[cur]; if (back) back.focus({ preventScroll: true });
+    const back = byIndex[cur] || opener; if (back) { follow(back, false); if (usingKeys) back.focus({ preventScroll: true }); }
   });
   lb.addEventListener('cancel', () => reset(false));
 
